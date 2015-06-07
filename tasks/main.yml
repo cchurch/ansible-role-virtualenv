@@ -1,0 +1,88 @@
+---
+
+- name: determine if running with sudo
+  command: whoami
+  register: virtualenv_whoami_result
+  changed_when: false
+
+- name: initialize default variables
+  set_fact:
+    virtualenv_path: '{{virtualenv_path|mandatory}}'
+    virtualenv_user: '{{virtualenv_user|default(ansible_ssh_user,true)}}'
+    virtualenv_sudoing: '{{(virtualenv_whoami_result.stdout != ansible_ssh_user or virtualenv_whoami_result.stdout == "root")|bool}}'
+
+- name: install default os packages to create virtualenv
+  action:
+    module: '{{ansible_pkg_mgr}}'
+    name: '{{item.name|default(item,true)}}'
+    state: '{{item.state|default("present",true)}}'
+  with_items: virtualenv_default_os_packages[ansible_pkg_mgr|default(none,true)]|default([])
+  when: virtualenv_sudoing
+
+- name: install additional os packages to support virtualenv
+  action:
+    module: '{{ansible_pkg_mgr}}'
+    name: '{{item.name|default(item,true)}}'
+    state: '{{item.state|default("present",true)}}'
+  with_items: virtualenv_os_packages[ansible_pkg_mgr|default(none,true)]|default([])
+  when: virtualenv_sudoing
+
+- name: install global python packages with easy_install
+  easy_install:
+    executable: '{{virtualenv_easy_install_executable|default(omit)}}'
+    name: '{{item.name|default(item,true)}}'
+    state: '{{item.state|default("present",true)}}'
+  with_items: virtualenv_easy_install_packages
+  when: virtualenv_sudoing
+
+- name: install global python packages with pip
+  pip:
+    executable: '{{virtualenv_pip_executable|default(omit)}}'
+    name: '{{item.name|default(item,true)}}'
+    version: '{{item.version|default(omit,true)}}'
+    state: '{{item.state|default("present",true)}}'
+  with_items: virtualenv_global_packages
+  when: virtualenv_sudoing
+
+- name: create virtualenv
+  pip:
+    name: wsgiref
+    virtualenv: '{{virtualenv_path}}'
+    virtualenv_command: '{{virtualenv_command|default(omit)}}'
+    virtualenv_site_packages: '{{virtualenv_site_packages|default(omit)}}'
+  sudo: '{{(virtualenv_user != ansible_ssh_user)|bool}}'
+  sudo_user: '{{virtualenv_user}}'
+  register: virtualenv_create_result
+  changed_when: virtualenv_create_result.stdout|match('^New.*')
+  notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'
+
+- name: install virtualenv pre packages
+  pip:
+    name: '{{item.name|default(item,true)}}'
+    version: '{{item.version|default(omit,true)}}'
+    state: '{{item.state|default("present",true)}}'
+    virtualenv: '{{virtualenv_path}}'
+  sudo: '{{(virtualenv_user != ansible_ssh_user)|bool}}'
+  sudo_user: '{{virtualenv_user}}'
+  with_items: virtualenv_pre_packages
+  notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'
+
+- name: install virtualenv requirements
+  pip:
+    requirements: '{{item}}'
+    virtualenv: '{{virtualenv_path}}'
+  sudo: '{{(virtualenv_user != ansible_ssh_user)|bool}}'
+  sudo_user: '{{virtualenv_user}}'
+  with_items: virtualenv_requirements
+  notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'
+
+- name: install virtualenv post packages
+  pip:
+    name: '{{item.name|default(item,true)}}'
+    version: '{{item.version|default(omit,true)}}'
+    state: '{{item.state|default("present",true)}}'
+    virtualenv: '{{virtualenv_path}}'
+  sudo: '{{(virtualenv_user != ansible_ssh_user)|bool}}'
+  sudo_user: '{{virtualenv_user}}'
+  with_items: virtualenv_post_packages
+  notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'

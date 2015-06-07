@@ -1,0 +1,5 @@
+---
+
+- name: virtualenv default handler
+  debug:
+    msg: "Updated virtualenv at {{virtualenv_path}}."

@@ -1,0 +1,21 @@
+---
+
+galaxy_info:
+  author: Chris Church
+  description: Configure and update a Python virtualenv.
+  company: "Nine More Minutes, Inc."
+  license: BSD
+  min_ansible_version: 1.8
+  platforms:
+    - name: EL
+      versions: ['all']
+    - name: Fedora
+      versions: ['all']
+    - name: Ubuntu
+      versions: ['all']
+    - name: Debian
+      versions: ['all']
+  categories:
+    - development
+    - packaging
+dependencies: []

@@ -1,0 +1,13 @@
+---
+
+virtualenv_os_packages: {}
+
+virtualenv_easy_install_packages: []
+
+virtualenv_global_packages: []
+
+virtualenv_pre_packages: []
+
+virtualenv_requirements: []
+
+virtualenv_post_packages: []
