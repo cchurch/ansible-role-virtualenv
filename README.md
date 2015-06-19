@@ -25,6 +25,7 @@ The following variables may be defined to customize this role:
 - `virtualenv_requirements`: List of requirements files to `pip` install in the virtualenv, default is `[]`.
 - `virtualenv_post_packages`: Python packages to `pip` install in the virtualenv after requirements files, default is `[]`.
 - `virtualenv_notify_on_updated`: Handler name to notify when the virtualenv was created or updated.
+- `virtualenv_recreate`: Boolean indicating whether to delete and recreate virtualenv, default is `no`.
 
 Each item in a package list above may be specified as a string with only the
 package name or as a hash with `name`, `state` or `version` keys, e.g.:

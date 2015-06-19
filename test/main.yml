@@ -25,6 +25,9 @@
     - role: cchurch.virtualenv
       virtualenv_notify_on_updated: "virtualenv handler no change"
     - role: cchurch.virtualenv
+      virtualenv_notify_on_updated: "virtualenv handler recreated"
+      virtualenv_recreate: true
+    - role: cchurch.virtualenv
       virtualenv_pre_packages:
         - pytz
       virtualenv_notify_on_updated: "virtualenv handler pre packages"
@@ -60,6 +63,9 @@
     - name: virtualenv handler no change
       set_fact:
         virtualenv_notified_no_change: true
+    - name: virtualenv handler recreated
+      set_fact:
+        virtualenv_notified_recreated: true
     - name: virtualenv handler pre packages
       set_fact:
         virtualenv_notified_pre_packages: true
@@ -81,6 +87,7 @@
           - foo_notified
           - bar_notified
           #- virtualenv_notified_no_change is not defined
+          - virtualenv_notified_recreated
           - virtualenv_notified_pre_packages
           - virtualenv_notified_pre_packages_downgrade
           - virtualenv_notified_requirements

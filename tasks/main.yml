@@ -44,6 +44,14 @@
   with_items: virtualenv_global_packages
   when: virtualenv_sudoing
 
+- name: remove existing virtualenv
+  file:
+    path: '{{virtualenv_path}}'
+    state: absent
+  sudo: '{{(virtualenv_user != ansible_ssh_user)|bool}}'
+  sudo_user: '{{virtualenv_user}}'
+  when: virtualenv_recreate
+
 - name: create virtualenv
   pip:
     name: wsgiref
@@ -53,7 +61,7 @@
   sudo: '{{(virtualenv_user != ansible_ssh_user)|bool}}'
   sudo_user: '{{virtualenv_user}}'
   register: virtualenv_create_result
-  changed_when: virtualenv_create_result.stdout|match('^New.*')
+  changed_when: virtualenv_create_result|success and virtualenv_create_result.stdout|match('^New.*')
   notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'
 
 - name: install virtualenv pre packages

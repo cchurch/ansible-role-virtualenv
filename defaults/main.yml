@@ -11,3 +11,5 @@ virtualenv_pre_packages: []
 virtualenv_requirements: []
 
 virtualenv_post_packages: []
+
+virtualenv_recreate: false
