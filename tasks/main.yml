@@ -44,8 +44,10 @@
   with_items: virtualenv_global_packages
   when: virtualenv_sudoing
 
-- name: run included tasks with sudo depending on virtualenv_user
-  include: 'included.yml'
-  vars:
-    ansible_sudo: '{{(virtualenv_user != ansible_ssh_user)|bool}}'
-    ansible_sudo_user: '{{virtualenv_user}}'
+- name: run included tasks with sudo
+  include: 'with_sudo.yml'
+  when: virtualenv_user != ansible_ssh_user
+
+- name: run included tasks without sudo
+  include: 'without_sudo.yml'
+  when: virtualenv_user == ansible_ssh_user

@@ -19,10 +19,6 @@
           decorator
           requests
         dest: "{{test_path}}/requirements.txt"
-    - assert:
-        that:
-          - ansible_sudo is not defined
-          - ansible_sudo_user is not defined
   roles:
     - role: cchurch.virtualenv
       virtualenv_notify_on_updated: "virtualenv handler created"
@@ -85,10 +81,6 @@
 
 - hosts: all
   tasks:
-    - assert:
-        that:
-          - ansible_sudo is not defined
-          - ansible_sudo_user is not defined
     - assert:
         that:
           - virtualenv_notified_created
