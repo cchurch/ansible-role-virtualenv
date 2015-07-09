@@ -51,7 +51,7 @@
 
 - name: set ansible_sudo for the following tasks
   set_fact:
-    ansible_sudo: '{{(virtualenv_target_user != ansible_ssh_user)|bool}}'
+    ansible_sudo: '{{(virtualenv_user != ansible_ssh_user)|bool}}'
 
 - name: remove existing virtualenv
   file:
