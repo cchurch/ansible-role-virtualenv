@@ -44,11 +44,19 @@
   with_items: virtualenv_global_packages
   when: virtualenv_sudoing
 
+- name: save current value of ansible_sudo (if defined)
+  set_fact:
+    virtualenv_ansible_sudo: '{{ansible_sudo|bool}}'
+  when: ansible_sudo is defined
+
+- name: set ansible_sudo for the following tasks
+  set_fact:
+    ansible_sudo: '{{(virtualenv_target_user != ansible_ssh_user)|bool}}'
+
 - name: remove existing virtualenv
   file:
     path: '{{virtualenv_path}}'
     state: absent
-  sudo: '{{(virtualenv_user != ansible_ssh_user)|bool}}'
   sudo_user: '{{virtualenv_user}}'
   when: virtualenv_recreate
 
@@ -58,7 +66,6 @@
     virtualenv: '{{virtualenv_path}}'
     virtualenv_command: '{{virtualenv_command|default(omit)}}'
     virtualenv_site_packages: '{{virtualenv_site_packages|default(omit)}}'
-  sudo: '{{(virtualenv_user != ansible_ssh_user)|bool}}'
   sudo_user: '{{virtualenv_user}}'
   register: virtualenv_create_result
   changed_when: virtualenv_create_result|success and virtualenv_create_result.stdout|match('^New.*')
@@ -70,7 +77,6 @@
     version: '{{item.version|default(omit,true)}}'
     state: '{{item.state|default("present",true)}}'
     virtualenv: '{{virtualenv_path}}'
-  sudo: '{{(virtualenv_user != ansible_ssh_user)|bool}}'
   sudo_user: '{{virtualenv_user}}'
   with_items: virtualenv_pre_packages
   notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'
@@ -79,7 +85,6 @@
   pip:
     requirements: '{{item}}'
     virtualenv: '{{virtualenv_path}}'
-  sudo: '{{(virtualenv_user != ansible_ssh_user)|bool}}'
   sudo_user: '{{virtualenv_user}}'
   with_items: virtualenv_requirements
   notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'
@@ -90,7 +95,11 @@
     version: '{{item.version|default(omit,true)}}'
     state: '{{item.state|default("present",true)}}'
     virtualenv: '{{virtualenv_path}}'
-  sudo: '{{(virtualenv_user != ansible_ssh_user)|bool}}'
   sudo_user: '{{virtualenv_user}}'
   with_items: virtualenv_post_packages
   notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'
+
+- name: restore previous value of ansible_sudo (if defined)
+  set_fact:
+    ansible_sudo: '{{virtualenv_ansible_sudo|bool}}'
+  when: virtualenv_ansible_sudo is defined
