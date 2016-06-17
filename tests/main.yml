@@ -38,6 +38,14 @@
         home: /home/admin
         password: '$6$8yuM3YVsSYTjtPr$b742a/sSdpKpyuC9J7L2fHRrV1pUtHeJuUj6KrjQ7UsHRrT8ffvqnoUutJLVqIArHnm3/0GtF5DH5hnLn8rJo1'
         groups: '{% if ansible_os_family == "RedHat" %}wheel{% else %}sudo{% endif %}'
+    - name: make sure admin can sudo for centos6
+      copy:
+        content: '%wheel ALL=(ALL) ALL'
+        dest: /etc/sudoers.d/sudo_wheel
+        mode: 0440
+        owner: root
+        group: root
+      when: inventory_hostname|search('_centos6')
     - name: create venv user to test become capabilities
       user:
         name: venv
