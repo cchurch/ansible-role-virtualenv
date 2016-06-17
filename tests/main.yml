@@ -12,6 +12,11 @@
     test_path: "~/test_venv"
     virtualenv_path: "{{test_path}}/env"
   tasks:
+    - name: make sure sudo is installed
+      action:
+        module: '{{ansible_pkg_mgr}}'
+        name: sudo
+        state: present
     - name: remove virtualenv path
       file:
         path: "{{virtualenv_path}}"
@@ -49,37 +54,37 @@
   roles:
     - role: cchurch.virtualenv
       virtualenv_notify_on_updated: "virtualenv handler created"
-    #- role: cchurch.virtualenv
-    #  virtualenv_notify_on_updated: "virtualenv handler no change"
-    #- role: cchurch.virtualenv
-    #  virtualenv_notify_on_updated: "virtualenv handler recreated"
-    #  virtualenv_recreate: true
-    #- role: cchurch.virtualenv
-    #  virtualenv_pre_packages:
-    #    - pytz
-    #  virtualenv_notify_on_updated: "virtualenv handler pre packages"
-    #- role: cchurch.virtualenv
-    #  virtualenv_pre_packages:
-    #    - name: pytz
-    #      version: "2014.4"
-    #  virtualenv_notify_on_updated: "virtualenv handler pre packages downgrade"
-    #- role: cchurch.virtualenv
-    #  virtualenv_requirements:
-    #    - "{{test_path}}/requirements.txt"
-    #  virtualenv_notify_on_updated: "virtualenv handler requirements"
-    #- role: cchurch.virtualenv
-    #  virtualenv_post_packages:
-    #    - name: pytz
-    #      state: absent
-    #  virtualenv_notify_on_updated: "virtualenv handler post packages"
+    - role: cchurch.virtualenv
+      virtualenv_notify_on_updated: "virtualenv handler no change"
+    - role: cchurch.virtualenv
+      virtualenv_notify_on_updated: "virtualenv handler recreated"
+      virtualenv_recreate: true
+    - role: cchurch.virtualenv
+      virtualenv_pre_packages:
+        - pytz
+      virtualenv_notify_on_updated: "virtualenv handler pre packages"
+    - role: cchurch.virtualenv
+      virtualenv_pre_packages:
+        - name: pytz
+          version: "2014.4"
+      virtualenv_notify_on_updated: "virtualenv handler pre packages downgrade"
+    - role: cchurch.virtualenv
+      virtualenv_requirements:
+        - "{{test_path}}/requirements.txt"
+      virtualenv_notify_on_updated: "virtualenv handler requirements"
+    - role: cchurch.virtualenv
+      virtualenv_post_packages:
+        - name: pytz
+          state: absent
+      virtualenv_notify_on_updated: "virtualenv handler post packages"
     - role: cchurch.virtualenv
       virtualenv_notify_on_updated: "virtualenv handler created with become"
       virtualenv_user: venv
       virtualenv_path: /home/venv/test_env
-    #- role: cchurch.virtualenv
-    #  virtualenv_notify_on_updated: "virtualenv handler no change with become"
-    #  virtualenv_user: venv
-    #  virtualenv_path: /home/venv/test_env
+    - role: cchurch.virtualenv
+      virtualenv_notify_on_updated: "virtualenv handler no change with become"
+      virtualenv_user: venv
+      virtualenv_path: /home/venv/test_env
   handlers:
     - name: virtualenv handler created
       set_fact:
@@ -126,16 +131,16 @@
       assert:
         that:
           - virtualenv_notified_created
-          #- foo_notified
-          #- bar_notified
-          #- virtualenv_notified_no_change is not defined
-          #- virtualenv_notified_recreated
-          #- virtualenv_notified_pre_packages
-          #- virtualenv_notified_pre_packages_downgrade
-          #- virtualenv_notified_requirements
-          #- virtualenv_notified_post_packages
+          - foo_notified
+          - bar_notified
+          - virtualenv_notified_no_change is not defined
+          - virtualenv_notified_recreated
+          - virtualenv_notified_pre_packages
+          - virtualenv_notified_pre_packages_downgrade
+          - virtualenv_notified_requirements
+          - virtualenv_notified_post_packages
           - virtualenv_notified_created_with_become
-          #- virtualenv_notified_no_change_with_become is not defined
+          - virtualenv_notified_no_change_with_become is not defined
     - name: check that root virtualenv was created
       stat:
         path: '~/test_venv/env/bin/python'
@@ -210,7 +215,7 @@
         virtualenv_notified_created_by_venv: true
 
 - name: check that role ran as expected as venv
-  hosts: Xdocker_containers
+  hosts: docker_containers
   tasks:
     - name: assert that appropriate handlers were notified
       assert:
