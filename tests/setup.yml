@@ -1,0 +1,76 @@
+---
+
+# Basically a copy of:
+# https://github.com/chrismeyersfsu/provision_docker/blob/master/tasks/inc_cloud_iface.yml
+
+- name: setup docker containers
+  hosts: localhost
+  gather_facts: false
+  vars:
+    provision_docker_inventory: '{{docker_inventory}}'
+    provision_docker_image_default: "chrismeyers/centos6"
+    provision_docker_privileged: true
+    provision_docker_ip: "127.0.0.1"
+    provision_docker_ssh_user: "root"
+    provision_docker_ssh_pass: "docker.io"
+    provision_docker_use_tls: "encrypt"
+    provision_docker_state: "reloaded"
+    provision_docker_groups:
+      - 'docker_containers'
+  tasks:
+
+    - name: Bring up list of hosts
+      local_action: 
+        module: docker
+        name: "{{ item['name'] }}"
+        image: "{{ item.image|default(provision_docker_image_default) }}"
+        privileged: "{{ provision_docker_privileged }}"
+        state: "{{ provision_docker_state }}"
+        use_tls: "{{ provision_docker_use_tls }}"
+        #stop_timeout: 120
+        expose:
+          - "1-65535"
+      with_items: "{{ provision_docker_inventory }}"
+
+    - name: Get IP of container
+      local_action: script docker_inspect.sh {{item.name}}
+      register: provision_docker_ip
+      with_items: "{{ provision_docker_inventory }}"
+      changed_when: false
+      failed_when: not provision_docker_ip.stdout_lines.0
+
+    # TODO: copy ALL host vars in the inventory
+    - name: "Associate ip address with hosts"
+      local_action:
+        module: add_host
+        name: "{{ item.1['name'] }}"
+        ansible_ssh_host: "{{ provision_docker_ip.results[item.0].stdout_lines.0 }}"
+        ansible_ssh_user: "{{ item.1['ansible_ssh_user']|default(provision_docker_ssh_user) }}"
+        ansible_ssh_pass: "{{ item.1['ansible_ssh_pass']|default(provision_docker_ssh_pass) }}"
+        groups: "{{ provision_docker_groups | union(item.1['groups']|default([])) | join(',') }}"
+      with_indexed_items: "{{ provision_docker_inventory }}"
+      changed_when: false
+
+    - name: Wait for ssh
+      wait_for:
+        host: "{{ hostvars[item.name]['ansible_ssh_host'] }}"
+        port: 22
+        timeout: 30
+        connect_timeout: 30
+      with_items: "{{ provision_docker_inventory }}"
+
+    - name: Make sure ssh is really up
+      ping:
+      delegate_to: "{{ item['name'] }}"
+      with_items: "{{ provision_docker_inventory }}"
+
+- name: install epel on centos6
+  hosts: '*_centos6'
+  gather_facts: false
+  tasks:
+    - name: install epel6 repository
+      shell: >
+        test 1 && rpm -q epel-release ||
+        rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+      register: epel_result
+      changed_when: "'not installed' in epel_result.stdout"

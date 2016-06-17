@@ -1,5 +1,5 @@
 [![Build Status](http://img.shields.io/travis/cchurch/ansible-role-virtualenv.svg)](https://travis-ci.org/cchurch/ansible-role-virtualenv)
-[![Galaxy](http://img.shields.io/badge/galaxy-cchurch.virtualenv-blue.svg)](https://galaxy.ansible.com/list#/roles/4061)
+[![Galaxy](http://img.shields.io/badge/galaxy-cchurch.virtualenv-blue.svg)](https://galaxy.ansible.com/cchurch/virtualenv/)
 
 VirtualEnv
 ==========

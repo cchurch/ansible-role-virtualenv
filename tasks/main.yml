@@ -1,39 +1,40 @@
 ---
 
-- name: determine if running with sudo
+- name: determine current user
   command: whoami
   register: virtualenv_whoami_result
   changed_when: false
 
 - name: initialize default variables
   set_fact:
-    virtualenv_path: '{{virtualenv_path|mandatory}}'
-    virtualenv_user: '{{virtualenv_user|default(ansible_ssh_user,true)}}'
-    virtualenv_sudoing: '{{(virtualenv_whoami_result.stdout != ansible_ssh_user or virtualenv_whoami_result.stdout == "root")|bool}}'
+    virtualenv_internal_path: '{{virtualenv_path|mandatory}}'
+    virtualenv_internal_user: '{{virtualenv_user|default(ansible_ssh_user,true)}}'
+    virtualenv_becoming: '{{(virtualenv_whoami_result.stdout != ansible_ssh_user or virtualenv_whoami_result.stdout == "root")|bool}}'
+    virtualenv_actual_user: '{{virtualenv_whoami_result.stdout}}'
 
 - name: install default os packages to create virtualenv
   action:
     module: '{{ansible_pkg_mgr}}'
     name: '{{item.name|default(item,true)}}'
     state: '{{item.state|default("present",true)}}'
-  with_items: virtualenv_default_os_packages[ansible_pkg_mgr|default(none,true)]|default([])
-  when: virtualenv_sudoing
+  with_items: '{{virtualenv_default_os_packages[ansible_pkg_mgr|default(none,true)]|default([])}}'
+  when: virtualenv_becoming
 
 - name: install additional os packages to support virtualenv
   action:
     module: '{{ansible_pkg_mgr}}'
     name: '{{item.name|default(item,true)}}'
     state: '{{item.state|default("present",true)}}'
-  with_items: virtualenv_os_packages[ansible_pkg_mgr|default(none,true)]|default([])
-  when: virtualenv_sudoing
+  with_items: '{{virtualenv_os_packages[ansible_pkg_mgr|default(none,true)]|default([])}}'
+  when: virtualenv_becoming
 
 - name: install global python packages with easy_install
   easy_install:
     executable: '{{virtualenv_easy_install_executable|default(omit)}}'
     name: '{{item.name|default(item,true)}}'
     state: '{{item.state|default("present",true)}}'
-  with_items: virtualenv_easy_install_packages
-  when: virtualenv_sudoing
+  with_items: '{{virtualenv_easy_install_packages}}'
+  when: virtualenv_becoming
 
 - name: install global python packages with pip
   pip:
@@ -41,13 +42,13 @@
     name: '{{item.name|default(item,true)}}'
     version: '{{item.version|default(omit,true)}}'
     state: '{{item.state|default("present",true)}}'
-  with_items: virtualenv_global_packages
-  when: virtualenv_sudoing
+  with_items: '{{virtualenv_global_packages}}'
+  when: virtualenv_becoming
 
-- name: run included tasks with sudo
-  include: 'with_sudo.yml'
-  when: virtualenv_user != ansible_ssh_user
+- name: run included tasks with become
+  include: with_become.yml
+  when: virtualenv_internal_user != virtualenv_actual_user
 
-- name: run included tasks without sudo
-  include: 'without_sudo.yml'
-  when: virtualenv_user == ansible_ssh_user
+- name: run included tasks without become
+  include: without_become.yml
+  when: virtualenv_internal_user == virtualenv_actual_user

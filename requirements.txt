@@ -1,2 +1,4 @@
-ansible==1.9.1
+ansible==2.1.0.0
 bumpversion==0.5.3
+docker-py==1.8.1
+tox==2.3.1
