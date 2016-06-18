@@ -27,4 +27,4 @@ install:
 
 script:
   - ansible-playbook -i tests/inventory tests/main.yml --syntax-check
-  - ansible-playbook -i tests/inventory tests/main.yml -vvvv
+  - ansible-playbook -i tests/inventory tests/main.yml -vv
