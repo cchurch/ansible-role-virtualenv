@@ -38,14 +38,14 @@
         home: /home/admin
         password: '$6$8yuM3YVsSYTjtPr$b742a/sSdpKpyuC9J7L2fHRrV1pUtHeJuUj6KrjQ7UsHRrT8ffvqnoUutJLVqIArHnm3/0GtF5DH5hnLn8rJo1'
         groups: '{% if ansible_os_family == "RedHat" %}wheel{% else %}sudo{% endif %}'
-    - name: make sure admin can sudo for centos6
+    - name: make sure admin can sudo for centos
       copy:
-        content: '%wheel ALL=(ALL) ALL'
+        content: '%wheel ALL=(ALL) NOPASSWD: ALL'
         dest: /etc/sudoers.d/sudo_wheel
         mode: 0440
         owner: root
         group: root
-      when: inventory_hostname|search('_centos6')
+      when: inventory_hostname|search('_centos')
     - name: create venv user to test become capabilities
       user:
         name: venv
@@ -54,7 +54,7 @@
         password: '$6$8yuM3YVsSYTjtPr$b742a/sSdpKpyuC9J7L2fHRrV1pUtHeJuUj6KrjQ7UsHRrT8ffvqnoUutJLVqIArHnm3/0GtF5DH5hnLn8rJo1'
 
 - name: test running as root user
-  hosts: Xdocker_containers
+  hosts: docker_containers
   gather_facts: false
   vars:
     test_path: "~/test_venv"
@@ -133,7 +133,7 @@
         virtualenv_notified_no_change_with_become: true
 
 - name: check that role ran as expected as root
-  hosts: Xdocker_containers
+  hosts: docker_containers
   tasks:
     - name: assert that appropriate handlers were notified
       assert:
@@ -160,16 +160,16 @@
       register: virtualenv_venv_stat_result
       failed_when: 'not virtualenv_venv_stat_result.stat.exists or virtualenv_venv_stat_result.stat.pw_name != "venv"'
 
-- name: test running as admin user
+- name: test running as admin user with become enabled
   hosts: docker_containers
   gather_facts: false
   become: true
   vars:
-    test_path: "~/test_venv2"
-    virtualenv_path: "{{test_path}}/env"
+    virtualenv_path: "~/test_venv2a"
     ansible_ssh_user: admin
     ansible_ssh_pass: testpass
     ansible_become_pass: testpass
+    ansible_sudo_pass: testpass
   roles:
     - role: cchurch.virtualenv
       virtualenv_notify_on_updated: "virtualenv handler created by admin"
@@ -178,7 +178,7 @@
     - role: cchurch.virtualenv
       virtualenv_notify_on_updated: "virtualenv handler created by admin with become"
       virtualenv_user: venv
-      virtualenv_path: /home/venv/test_env2
+      virtualenv_path: /home/venv/test_env2b
   handlers:
     - name: virtualenv handler created by admin
       set_fact:
@@ -197,12 +197,12 @@
           - virtualenv_notified_created_by_admin_with_become
     - name: check that admin virtualenv was created
       stat:
-        path: '/home/admin/test_venv2/env/bin/python'
+        path: '/home/admin/test_venv2a/bin/python'
       register: virtualenv_admin_stat_result
       failed_when: 'not virtualenv_admin_stat_result.stat.exists or virtualenv_admin_stat_result.stat.pw_name != "admin"'
     - name: check that venv virtualenv was created
       stat:
-        path: '/home/venv/test_env2/bin/python'
+        path: '/home/venv/test_env2b/bin/python'
       register: virtualenv_venv_stat_result
       failed_when: 'not virtualenv_venv_stat_result.stat.exists or virtualenv_venv_stat_result.stat.pw_name != "venv"'
 
@@ -210,8 +210,7 @@
   hosts: docker_containers
   gather_facts: false
   vars:
-    test_path: "~/test_venv3"
-    virtualenv_path: "{{test_path}}/env"
+    virtualenv_path: "~/test_venv3"
     ansible_ssh_user: venv
     ansible_ssh_pass: testpass
   roles:
@@ -231,7 +230,7 @@
           - virtualenv_notified_created_by_venv
     - name: check that venv virtualenv was created
       stat:
-        path: '/home/venv/test_env3/bin/python'
+        path: '/home/venv/test_venv3/bin/python'
       register: virtualenv_venv_stat_result
       failed_when: 'not virtualenv_venv_stat_result.stat.exists or virtualenv_venv_stat_result.stat.pw_name != "venv"'
 

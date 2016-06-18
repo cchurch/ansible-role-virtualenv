@@ -9,7 +9,7 @@ services:
   - docker
 env:
   global:
-    - ANSIBLE_HOST_KEY_CHECKING=0
+    - ANSIBLE_CONFIG=tests/ansible.cfg
   matrix:
     - ANSIBLE_VERSION_SPEC="ansible>=1.9,<2.0"
     - ANSIBLE_VERSION_SPEC="ansible>=2.0,<2.1"
