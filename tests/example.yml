@@ -1,0 +1,23 @@
+---
+
+- hosts: all
+  roles:
+    - role: cchurch.virtualenv
+      virtualenv_path: ~/env
+      virtualenv_os_packages:
+        apt: [libjpeg-dev]
+        yum: [libjpeg-devel]
+      virtualenv_pre_packages:
+        - name: Django
+          version: 1.8.13
+        - Pillow
+      virtualenv_requirements:
+        - ~/src/requirements.txt
+      virtualenv_post_packages:
+        - name: PIL
+          state: absent
+      virtualenv_notify_on_updated: virtualenv updated
+  handlers:
+    - name: virtualenv updated
+      debug:
+        msg: 'virtualenv in {{virtualenv_path}} was updated.'

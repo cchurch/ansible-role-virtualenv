@@ -1,0 +1,234 @@
+---
+
+- name: setup for tests
+  hosts: containers
+  tags: [always]
+  tasks:
+    - name: remove virtualenv paths
+      file:
+        path: '{{item}}'
+        state: absent
+      with_items:
+        - /root/test_env
+        - /home/normal/test_env
+        - /home/admin/test_env2a
+        - /home/normal/test_env2b
+        - /home/normal/test_env3
+    - name: create admin user to test become capabilities
+      user:
+        name: admin
+        createhome: true
+        home: /home/admin
+        password: '$6$8yuM3YVsSYTjtPr$b742a/sSdpKpyuC9J7L2fHRrV1pUtHeJuUj6KrjQ7UsHRrT8ffvqnoUutJLVqIArHnm3/0GtF5DH5hnLn8rJo1'
+        groups: '{% if ansible_os_family == "RedHat" %}wheel{% else %}sudo{% endif %}'
+    - name: create normal user to test become capabilities
+      user:
+        name: normal
+        createhome: true
+        home: /home/normal
+        password: '$6$8yuM3YVsSYTjtPr$b742a/sSdpKpyuC9J7L2fHRrV1pUtHeJuUj6KrjQ7UsHRrT8ffvqnoUutJLVqIArHnm3/0GtF5DH5hnLn8rJo1'
+
+- name: test running as root user
+  hosts: containers
+  gather_facts: false
+  tags: [root]
+  vars:
+    virtualenv_path: '~/test_env'
+  pre_tasks:
+    - name: create test requirements file
+      copy:
+        content: |
+          decorator
+          requests
+        dest: '~/venv_requirements.txt'
+  roles:
+    - role: cchurch.virtualenv
+      virtualenv_notify_on_updated: 'virtualenv handler created'
+    - role: cchurch.virtualenv
+      virtualenv_notify_on_updated: 'virtualenv handler no change'
+    - role: cchurch.virtualenv
+      virtualenv_notify_on_updated: 'virtualenv handler recreated'
+      virtualenv_recreate: true
+    - role: cchurch.virtualenv
+      virtualenv_pre_packages:
+        - pytz
+      virtualenv_notify_on_updated: 'virtualenv handler pre packages'
+    - role: cchurch.virtualenv
+      virtualenv_pre_packages:
+        - name: pytz
+          version: '2014.4'
+      virtualenv_notify_on_updated: 'virtualenv handler pre packages downgrade'
+    - role: cchurch.virtualenv
+      virtualenv_requirements:
+        - '~/venv_requirements.txt'
+      virtualenv_notify_on_updated: 'virtualenv handler requirements'
+    - role: cchurch.virtualenv
+      virtualenv_post_packages:
+        - name: pytz
+          state: absent
+      virtualenv_notify_on_updated: 'virtualenv handler post packages'
+    - role: cchurch.virtualenv
+      virtualenv_notify_on_updated: 'virtualenv handler created with become'
+      virtualenv_user: normal
+      virtualenv_path: /home/normal/test_env
+    - role: cchurch.virtualenv
+      virtualenv_notify_on_updated: 'virtualenv handler no change with become'
+      virtualenv_user: normal
+      virtualenv_path: /home/normal/test_env
+  handlers:
+    - name: virtualenv handler created
+      set_fact:
+        virtualenv_notified_created: true
+      changed_when: true
+      notify:
+        - virtualenv foo handler
+        - virtualenv bar handler
+    - name: virtualenv foo handler
+      set_fact:
+        virtualenv_foo_notified: true
+    - name: virtualenv bar handler
+      set_fact:
+        virtualenv_bar_notified: true
+    - name: virtualenv handler no change
+      set_fact:
+        virtualenv_notified_no_change: true
+    - name: virtualenv handler recreated
+      set_fact:
+        virtualenv_notified_recreated: true
+    - name: virtualenv handler pre packages
+      set_fact:
+        virtualenv_notified_pre_packages: true
+    - name: virtualenv handler pre packages downgrade
+      set_fact:
+        virtualenv_notified_pre_packages_downgrade: true
+    - name: virtualenv handler requirements
+      set_fact:
+        virtualenv_notified_requirements: true
+    - name: virtualenv handler post packages
+      set_fact:
+        virtualenv_notified_post_packages: true
+    - name: virtualenv handler created with become
+      set_fact:
+        virtualenv_notified_created_with_become: true
+    - name: virtualenv handler no change with become
+      set_fact:
+        virtualenv_notified_no_change_with_become: true
+
+- name: check that role ran as expected as root user
+  hosts: containers
+  gather_facts: false
+  tags: [root]
+  tasks:
+    - name: assert that appropriate handlers were notified
+      assert:
+        that:
+          - virtualenv_notified_created
+          - virtualenv_foo_notified
+          - virtualenv_bar_notified
+          - virtualenv_notified_no_change is not defined
+          - virtualenv_notified_recreated
+          - virtualenv_notified_pre_packages
+          - virtualenv_notified_pre_packages_downgrade
+          - virtualenv_notified_requirements
+          - virtualenv_notified_post_packages
+          - virtualenv_notified_created_with_become
+          - virtualenv_notified_no_change_with_become is not defined
+    - name: check that root virtualenv was created
+      stat:
+        path: '~/test_env/bin/python'
+      register: virtualenv_root_stat_result
+      failed_when: 'not virtualenv_root_stat_result.stat.exists or virtualenv_root_stat_result.stat.pw_name != ansible_user'
+    - name: check that normal virtualenv was created
+      stat:
+        path: '/home/normal/test_env/bin/python'
+      register: virtualenv_normal_stat_result
+      failed_when: 'not virtualenv_normal_stat_result.stat.exists or virtualenv_normal_stat_result.stat.pw_name != "normal"'
+
+- name: remove virtualenv package to test that admin will install it
+  hosts: containers
+  gather_facts: false
+  tags: [admin]
+  tasks:
+    - action:
+        module: '{{ansible_pkg_mgr}}'
+        name: python-virtualenv
+        state: absent
+
+- name: test running as admin user with become enabled
+  hosts: containers
+  gather_facts: false
+  tags: [admin]
+  become: true
+  vars:
+    virtualenv_path: '~/test_env2a'
+    ansible_user: admin
+    ansible_pass: testpass
+    ansible_become_pass: testpass
+  roles:
+    - role: cchurch.virtualenv
+      virtualenv_notify_on_updated: 'virtualenv handler created by admin'
+      virtualenv_os_packages:
+        - cowsay
+    - role: cchurch.virtualenv
+      virtualenv_notify_on_updated: 'virtualenv handler created by admin with become'
+      virtualenv_user: normal
+      virtualenv_path: /home/normal/test_env2b
+  handlers:
+    - name: virtualenv handler created by admin
+      set_fact:
+        virtualenv_notified_created_by_admin: true
+    - name: virtualenv handler created by admin with become
+      set_fact:
+        virtualenv_notified_created_by_admin_with_become: true
+
+- name: check that role ran as expected as admin user
+  hosts: containers
+  gather_facts: false
+  tags: [admin]
+  tasks:
+    - name: assert that appropriate handlers were notified
+      assert:
+        that:
+          - virtualenv_notified_created_by_admin
+          - virtualenv_notified_created_by_admin_with_become
+    - name: check that admin virtualenv was created
+      stat:
+        path: '/home/admin/test_env2a/bin/python'
+      register: virtualenv_admin_stat_result
+      failed_when: 'not virtualenv_admin_stat_result.stat.exists or virtualenv_admin_stat_result.stat.pw_name != "admin"'
+    - name: check that venv virtualenv was created
+      stat:
+        path: '/home/normal/test_env2b/bin/python'
+      register: virtualenv_normal_stat_result
+      failed_when: 'not virtualenv_normal_stat_result.stat.exists or virtualenv_normal_stat_result.stat.pw_name != "normal"'
+
+- name: test running as normal user
+  hosts: containers
+  gather_facts: false
+  tags: [normal]
+  vars:
+    virtualenv_path: '~/test_env3'
+    ansible_user: normal
+    ansible_pass: testpass
+  roles:
+    - role: cchurch.virtualenv
+      virtualenv_notify_on_updated: 'virtualenv handler created by normal'
+  handlers:
+    - name: virtualenv handler created by normal
+      set_fact:
+        virtualenv_notified_created_by_normal: true
+
+- name: check that role ran as expected as normal user
+  hosts: containers
+  gather_facts: false
+  tags: [normal]
+  tasks:
+    - name: assert that appropriate handlers were notified
+      assert:
+        that:
+          - virtualenv_notified_created_by_normal
+    - name: check that normal virtualenv was created
+      stat:
+        path: '/home/normal/test_env3/bin/python'
+      register: virtualenv_normal_stat_result
+      failed_when: 'not virtualenv_normal_stat_result.stat.exists or virtualenv_normal_stat_result.stat.pw_name != "normal"'

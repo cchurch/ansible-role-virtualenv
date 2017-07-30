@@ -2,18 +2,18 @@
 
 - name: remove existing virtualenv
   file:
-    path: '{{virtualenv_internal_path}}'
+    path: '{{_virtualenv_path}}'
     state: absent
   when: virtualenv_recreate
 
 - name: create virtualenv
   pip:
     name: wsgiref
-    virtualenv: '{{virtualenv_internal_path}}'
+    virtualenv: '{{_virtualenv_path}}'
     virtualenv_command: '{{virtualenv_command|default(omit)}}'
     virtualenv_site_packages: '{{virtualenv_site_packages|default(omit)}}'
-  register: virtualenv_create_result
-  changed_when: virtualenv_create_result|success and virtualenv_create_result.stdout|search('New python executable')
+  register: _virtualenv_create_result
+  changed_when: _virtualenv_create_result|success and _virtualenv_create_result.stdout|search('New python executable')
   notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'
 
 - name: install virtualenv pre packages
@@ -21,14 +21,14 @@
     name: '{{item.name|default(item,true)}}'
     version: '{{item.version|default(omit,true)}}'
     state: '{{item.state|default("present",true)}}'
-    virtualenv: '{{virtualenv_internal_path}}'
+    virtualenv: '{{_virtualenv_path}}'
   with_items: '{{virtualenv_pre_packages}}'
   notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'
 
 - name: install virtualenv requirements
   pip:
     requirements: '{{item}}'
-    virtualenv: '{{virtualenv_internal_path}}'
+    virtualenv: '{{_virtualenv_path}}'
   with_items: '{{virtualenv_requirements}}'
   notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'
 
@@ -37,6 +37,6 @@
     name: '{{item.name|default(item,true)}}'
     version: '{{item.version|default(omit,true)}}'
     state: '{{item.state|default("present",true)}}'
-    virtualenv: '{{virtualenv_internal_path}}'
+    virtualenv: '{{_virtualenv_path}}'
   with_items: '{{virtualenv_post_packages}}'
   notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'

@@ -1,1 +1,20 @@
+[local]
 localhost
+
+[containers]
+virtualenv_centos6 image="centos:6"
+virtualenv_centos7 image="centos:7"
+virtualenv_ubuntu14 image="ubuntu:trusty"
+virtualenv_ubuntu16 image="ubuntu:xenial"
+
+[containers:vars]
+ansible_connection=docker
+ansible_user=root
+
+[centos]
+virtualenv_centos6
+virtualenv_centos7
+
+[ubuntu]
+virtualenv_ubuntu14
+virtualenv_ubuntu16

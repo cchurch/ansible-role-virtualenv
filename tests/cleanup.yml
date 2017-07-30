@@ -1,12 +1,12 @@
 ---
 
 - name: cleanup docker containers
-  hosts: localhost
+  hosts: local
   gather_facts: false
   tasks:
     - name: stop and remove docker containers
-      docker:
-        name: '{{item.name}}'
-        image: '{{item.image}}'
+      docker_container:
+        name: '{{item}}'
+        image: '{{hostvars[item].image|default(provision_docker_image_default)}}'
         state: absent
-      with_items: '{{docker_inventory}}'
+      with_items: '{{provision_docker_inventory_group}}'

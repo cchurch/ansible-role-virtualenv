@@ -1,5 +1,13 @@
 ---
 
+virtualenv_default_os_packages:
+  apt:
+    - python-dev
+    - python-virtualenv
+  yum:
+    - python-devel
+    - python-virtualenv
+
 virtualenv_os_packages: {}
 
 virtualenv_easy_install_packages: []

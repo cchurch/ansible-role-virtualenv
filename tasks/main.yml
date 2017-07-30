@@ -2,15 +2,15 @@
 
 - name: determine current user
   command: whoami
-  register: virtualenv_whoami_result
+  register: _virtualenv_whoami_result
   changed_when: false
 
 - name: initialize default variables
   set_fact:
-    virtualenv_internal_path: '{{virtualenv_path|mandatory}}'
-    virtualenv_internal_user: '{{virtualenv_user|default(ansible_ssh_user,true)}}'
-    virtualenv_becoming: '{{(virtualenv_whoami_result.stdout != ansible_ssh_user or virtualenv_whoami_result.stdout == "root")|bool}}'
-    virtualenv_actual_user: '{{virtualenv_whoami_result.stdout}}'
+    _virtualenv_path: '{{virtualenv_path|mandatory}}'
+    _virtualenv_user: '{{virtualenv_user|default(ansible_user,true)|default(ansible_ssh_user,true)}}'
+    _virtualenv_becoming: '{{((_virtualenv_whoami_result.stdout != ansible_user and _virtualenv_whoami_result.stdout != ansible_ssh_user) or _virtualenv_whoami_result.stdout == "root")|bool}}'
+    _virtualenv_actual_user: '{{_virtualenv_whoami_result.stdout}}'
 
 - name: install default os packages to create virtualenv
   action:
@@ -18,7 +18,7 @@
     name: '{{item.name|default(item,true)}}'
     state: '{{item.state|default("present",true)}}'
   with_items: '{{virtualenv_default_os_packages[ansible_pkg_mgr|default(none,true)]|default([])}}'
-  when: virtualenv_becoming
+  when: _virtualenv_becoming
 
 - name: install additional os packages to support virtualenv
   action:
@@ -26,7 +26,7 @@
     name: '{{item.name|default(item,true)}}'
     state: '{{item.state|default("present",true)}}'
   with_items: '{{virtualenv_os_packages[ansible_pkg_mgr|default(none,true)]|default([])}}'
-  when: virtualenv_becoming
+  when: _virtualenv_becoming
 
 - name: install global python packages with easy_install
   easy_install:
@@ -34,7 +34,7 @@
     name: '{{item.name|default(item,true)}}'
     state: '{{item.state|default("present",true)}}'
   with_items: '{{virtualenv_easy_install_packages}}'
-  when: virtualenv_becoming
+  when: _virtualenv_becoming
 
 - name: install global python packages with pip
   pip:
@@ -43,12 +43,14 @@
     version: '{{item.version|default(omit,true)}}'
     state: '{{item.state|default("present",true)}}'
   with_items: '{{virtualenv_global_packages}}'
-  when: virtualenv_becoming
+  when: _virtualenv_becoming
 
-- name: run included tasks with become
-  include: with_become.yml
-  when: virtualenv_internal_user != virtualenv_actual_user
+- name: run update tasks with become
+  include: update.yml
+  when: _virtualenv_user != _virtualenv_actual_user
+  become: yes
+  become_user: '{{_virtualenv_user}}'
 
 - name: run included tasks without become
-  include: without_become.yml
-  when: virtualenv_internal_user == virtualenv_actual_user
+  include: update.yml
+  when: _virtualenv_user == _virtualenv_actual_user
