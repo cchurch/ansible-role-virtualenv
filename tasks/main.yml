@@ -8,8 +8,8 @@
 - name: initialize default variables
   set_fact:
     _virtualenv_path: '{{virtualenv_path|mandatory}}'
-    _virtualenv_user: '{{virtualenv_user|default(ansible_user,true)|default(ansible_ssh_user,true)}}'
-    _virtualenv_becoming: '{{((_virtualenv_whoami_result.stdout != ansible_user and _virtualenv_whoami_result.stdout != ansible_ssh_user) or _virtualenv_whoami_result.stdout == "root")|bool}}'
+    _virtualenv_user: '{{virtualenv_user|default(ansible_user|default(""),true)|default(ansible_ssh_user|default(""),true)}}'
+    _virtualenv_becoming: '{{((_virtualenv_whoami_result.stdout != ansible_user|default("") and _virtualenv_whoami_result.stdout != ansible_ssh_user|default("")) or _virtualenv_whoami_result.stdout == "root")|bool}}'
     _virtualenv_actual_user: '{{_virtualenv_whoami_result.stdout}}'
 
 - name: install default os packages to create virtualenv
