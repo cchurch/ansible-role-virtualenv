@@ -44,6 +44,9 @@ The following variables may be defined to customize this role:
   packages; default is `omit` to use the `pip` command found in the path.
 - `virtualenv_command`: Alternate executable to use to create virtualenv;
   default is `omit` to use `virtualenv` command found in the path.
+- `virtualenv_python`: Python executable to use when creating the virtualenv;
+  default is `omit` to use the default Python version running the Ansible `pip`
+  module.
 - `virtualenv_site_packages`: Boolean indicating whether virtualenv will use
   global site packages; default is `no`.
 - `virtualenv_pre_packages`: Python packages to `pip` install inside the

@@ -22,6 +22,14 @@
         mode: 0440
         owner: root
         group: root
+    - name: install ius community repo
+      yum:
+        name: https://centos{{ansible_distribution_major_version}}.iuscommunity.org/ius-release.rpm
+        state: present
+    - name: install python35 from ius
+      yum:
+        name: python35u
+        state: present
 
 - name: check and install python on ubuntu containers
   hosts: containers:&ubuntu
@@ -29,6 +37,9 @@
   tasks:
     - name: check for and install python
       raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+    - name: install ca certificates
+      apt:
+        name: ca-certificates
     - name: make sure sudo is installed
       apt:
         name: sudo
@@ -40,7 +51,17 @@
         mode: 0440
         owner: root
         group: root
-
+    - name: install deadsnakes repo on ubuntu 14
+      apt_repository:
+        repo: ppa:fkrull/deadsnakes
+        state: present
+      when: inventory_hostname == "virtualenv_ubuntu14"
+    - name: install python 3.5 on ubuntu 14
+      apt:
+        name: python3.5
+        state: present
+        update_cache: yes
+      when: inventory_hostname == "virtualenv_ubuntu14"
 
 - name: test connection to containers
   hosts: containers

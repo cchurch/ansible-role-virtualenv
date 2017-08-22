@@ -12,6 +12,7 @@
     virtualenv: '{{_virtualenv_path}}'
     virtualenv_command: '{{virtualenv_command|default(omit)}}'
     virtualenv_site_packages: '{{virtualenv_site_packages|default(omit)}}'
+    virtualenv_python: '{{virtualenv_python|default(omit)}}'
   register: _virtualenv_create_result
   changed_when: _virtualenv_create_result|success and _virtualenv_create_result.stdout|search('New python executable')
   notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'

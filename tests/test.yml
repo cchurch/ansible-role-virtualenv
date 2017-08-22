@@ -202,7 +202,17 @@
       register: virtualenv_normal_stat_result
       failed_when: 'not virtualenv_normal_stat_result.stat.exists or virtualenv_normal_stat_result.stat.pw_name != "normal"'
 
-- name: test running as normal user
+- name: make sure virtualenv package is installed in advance for normal user
+  hosts: containers
+  gather_facts: false
+  tags: [normal]
+  tasks:
+    - action:
+        module: '{{ansible_pkg_mgr}}'
+        name: python-virtualenv
+        state: present
+
+- name: test running as normal user using alternate python version
   hosts: containers
   gather_facts: false
   tags: [normal]
@@ -213,6 +223,7 @@
   roles:
     - role: cchurch.virtualenv
       virtualenv_notify_on_updated: 'virtualenv handler created by normal'
+      virtualenv_python: python3.5
   handlers:
     - name: virtualenv handler created by normal
       set_fact:
@@ -232,3 +243,11 @@
         path: '/home/normal/test_env3/bin/python'
       register: virtualenv_normal_stat_result
       failed_when: 'not virtualenv_normal_stat_result.stat.exists or virtualenv_normal_stat_result.stat.pw_name != "normal"'
+    - name: get version of python installed in virtualenv 
+      command: /home/normal/test_env3/bin/python -V
+      changed_when: false
+      register: virtualenv_normal_python_version
+    - name: check that virtualenv is running python 3.5
+      assert:
+        that:
+          - virtualenv_normal_python_version|version_compare("3.5", ">=")
