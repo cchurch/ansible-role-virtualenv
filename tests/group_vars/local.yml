@@ -1,8 +1,0 @@
----
-
-ansible_connection: local
-ansible_python_interpreter: '/usr/bin/env python'
-
-provision_docker_privileged: true
-provision_docker_inventory_group: "{{ groups['containers'] }}"
-provision_docker_use_docker_connection: true

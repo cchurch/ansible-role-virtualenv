@@ -1,27 +1,19 @@
 ---
 
 - name: launch docker containers
-  hosts: local
+  hosts: containers
   gather_facts: false
   roles:
     - role: chrismeyersfsu.provision_docker
+      provision_docker_inventory_group:
+        - '{{inventory_hostname}}'
+      delegate_to: localhost
 
-- name: install epel and configure sudo for centos containers
+- name: install epel on centos containers
   hosts: containers:&centos
   roles:
     - role: geerlingguy.repo-epel
-  post_tasks:
-    - name: make sure sudo is installed
-      yum:
-        name: sudo
-        state: present
-    - name: enable sudo with no password for wheel group
-      copy:
-        content: '%wheel ALL=(ALL) NOPASSWD: ALL'
-        dest: /etc/sudoers.d/sudo_wheel
-        mode: 0440
-        owner: root
-        group: root
+
 
 - name: check and install python on ubuntu containers
   hosts: containers:&ubuntu
@@ -29,18 +21,20 @@
   tasks:
     - name: check for and install python
       raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
-    - name: make sure sudo is installed
-      apt:
+
+- name: install and configure sudo on containers
+  hosts: centos:ubuntu:&containers
+  tasks:
+    - name: install sudo
+      package:
         name: sudo
-        state: present
-    - name: enable sudo with no password for sudo group
+    - name: enable sudo with no password
       copy:
-        content: '%sudo ALL=(ALL) NOPASSWD: ALL'
+        content: '%{{(ansible_os_family == "Debian")|ternary("sudo","wheel")}} ALL=(ALL) NOPASSWD: ALL'
         dest: /etc/sudoers.d/sudo_nopasswd
         mode: 0440
         owner: root
         group: root
-
 
 - name: test connection to containers
   hosts: containers

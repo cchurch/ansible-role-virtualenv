@@ -11,9 +11,16 @@ env:
   global:
     - ANSIBLE_CONFIG=tests/ansible.cfg
   matrix:
-    - ANSIBLE_VERSION_SPEC="ansible>=2.1,<2.2"
-    - ANSIBLE_VERSION_SPEC="ansible>=2.2,<2.3"
-    - ANSIBLE_VERSION_SPEC="ansible>=2.3,<2.4"
+    - ANSIBLE_VERSION="ansible~=2.1.0" ANSIBLE_LIMIT="local:debian:ubuntu"
+    - ANSIBLE_VERSION="ansible~=2.1.0" ANSIBLE_LIMIT="local:amazon:arch:centos"
+    - ANSIBLE_VERSION="ansible~=2.2.0" ANSIBLE_LIMIT="local:debian:ubuntu"
+    - ANSIBLE_VERSION="ansible~=2.2.0" ANSIBLE_LIMIT="local:amazon:arch:centos"
+    - ANSIBLE_VERSION="ansible~=2.3.0" ANSIBLE_LIMIT="local:debian:ubuntu"
+    - ANSIBLE_VERSION="ansible~=2.3.0" ANSIBLE_LIMIT="local:amazon:arch:centos"
+    - ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="local:debian:ubuntu"
+    - ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="local:amazon:arch:centos"
+    - ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="local:debian:ubuntu"
+    - ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="local:amazon:arch:centos"
 
 before_install:
   - sudo apt-get update -qq
@@ -21,11 +28,24 @@ before_install:
 
 install:
   - sudo apt-get install -y sshpass software-properties-common
-  - pip install $ANSIBLE_VERSION_SPEC
+  - pip install $ANSIBLE_VERSION
   - pip install docker-py
   - ansible-galaxy install -f -p tests/roles -r tests/roles/requirements.yml
   - ansible --version
 
 script:
   - ansible-playbook -i tests/inventory tests/main.yml --syntax-check
-  - ansible-playbook -i tests/inventory tests/main.yml -vv
+  - ansible-playbook -i tests/inventory -l $ANSIBLE_LIMIT tests/main.yml -vv
+
+after_script:
+  - ansible-playbook -i tests/inventory tests/cleanup.yml
+
+notifications:
+  webhooks:
+    urls:
+      - https://galaxy.ansible.com/api/v1/notifications/
+    on_success: always
+    on_failure: never
+    on_start: never
+    on_cancel: never
+    on_error: never

@@ -1,43 +1,56 @@
-.PHONY: core-requirements update-pip-requirements requirements \
-	galaxy-requirements syntax-check setup test cleanup clean-tox tox \
-	bump-major bump-minor bump-patch
-
+.PHONY: core-requirements
 core-requirements:
 	pip install "pip>=9,<9.1" setuptools "pip-tools>=1"
 
+.PHONY: update-pip-requirements
 update-pip-requirements: core-requirements
 	pip install -U "pip>=9,<9.1" setuptools "pip-tools>=1"
 	pip-compile -U requirements.in
 
+.PHONY: requirements
 requirements: core-requirements
 	pip-sync requirements.txt
 
+.PHONY: galaxy-requirements
 galaxy-requirements: requirements
 	ansible-galaxy install -f -p tests/roles -r tests/roles/requirements.yml
 
-syntax-check: requirements
+.PHONY: syntax-check
+syntax-check: requirements galaxy-requirements
 	ANSIBLE_CONFIG=tests/ansible.cfg ansible-playbook -i tests/inventory tests/main.yml --syntax-check
 
-setup: requirements
+.PHONY: setup
+setup: requirements galaxy-requirements
 	ANSIBLE_CONFIG=tests/ansible.cfg ansible-playbook -i tests/inventory -vv tests/setup.yml
 
-test: requirements
+.PHONY: test
+test: requirements galaxy-requirements
 	ANSIBLE_CONFIG=tests/ansible.cfg ansible-playbook -i tests/inventory -vv tests/main.yml
 
-cleanup: requirements
+.PHONY: test-only
+test-only: requirements galaxy-requirements
+	ANSIBLE_CONFIG=tests/ansible.cfg ansible-playbook -i tests/inventory -vv tests/test.yml
+
+.PHONY: cleanup
+cleanup: requirements galaxy-requirements
 	ANSIBLE_CONFIG=tests/ansible.cfg ansible-playbook -i tests/inventory -vv tests/cleanup.yml
 
+.PHONY: clean-tox
 clean-tox:
 	rm -rf .tox
 
-tox: requirements
+.PHONY: tox
+tox: requirements galaxy-requirements
 	tox
 
-bump-major:
+.PHONY: bump-major
+bump-major: requirements
 	bumpversion major
 
-bump-minor:
+.PHONY: bump-minor
+bump-minor: requirements
 	bumpversion minor
 
-bump-patch:
+.PHONY: bump-patch
+bump-patch: requirements
 	bumpversion patch

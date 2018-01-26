@@ -9,7 +9,7 @@
         yum: [libjpeg-devel]
       virtualenv_pre_packages:
         - name: Django
-          version: 1.8.13
+          version: 1.8.18
         - Pillow
       virtualenv_requirements:
         - ~/src/requirements.txt
