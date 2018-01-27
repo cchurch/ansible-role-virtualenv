@@ -31,8 +31,14 @@ ansible_user=root
 #[arch:vars]
 #ansible_python_interpreter=/usr/bin/python2
 
-[centos]
+[centos:children]
+centos6
+centos7
+
+[centos6]
 virtualenv_centos6
+
+[centos7]
 virtualenv_centos7
 
 #[debian]
@@ -44,6 +50,12 @@ virtualenv_centos7
 #virtualenv_fedora25
 #virtualenv_fedora26
 
-[ubuntu]
+[ubuntu:children]
+ubuntu14
+ubuntu16
+
+[ubuntu14]
 virtualenv_ubuntu14
+
+[ubuntu16]
 virtualenv_ubuntu16

@@ -11,16 +11,33 @@ env:
   global:
     - ANSIBLE_CONFIG=tests/ansible.cfg
   matrix:
-    - ANSIBLE_VERSION="ansible~=2.1.0" ANSIBLE_LIMIT="local:debian:ubuntu"
-    - ANSIBLE_VERSION="ansible~=2.1.0" ANSIBLE_LIMIT="local:amazon:arch:centos"
-    - ANSIBLE_VERSION="ansible~=2.2.0" ANSIBLE_LIMIT="local:debian:ubuntu"
-    - ANSIBLE_VERSION="ansible~=2.2.0" ANSIBLE_LIMIT="local:amazon:arch:centos"
-    - ANSIBLE_VERSION="ansible~=2.3.0" ANSIBLE_LIMIT="local:debian:ubuntu"
-    - ANSIBLE_VERSION="ansible~=2.3.0" ANSIBLE_LIMIT="local:amazon:arch:centos"
-    - ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="local:debian:ubuntu"
-    - ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="local:amazon:arch:centos"
-    - ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="local:debian:ubuntu"
-    - ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="local:amazon:arch:centos"
+    - ANSIBLE_VERSION="ansible~=2.1.0" ANSIBLE_LIMIT="centos6"
+    - ANSIBLE_VERSION="ansible~=2.1.0" ANSIBLE_LIMIT="centos7"
+    - ANSIBLE_VERSION="ansible~=2.1.0" ANSIBLE_LIMIT="ubuntu14"
+    - ANSIBLE_VERSION="ansible~=2.1.0" ANSIBLE_LIMIT="ubuntu16"
+    - ANSIBLE_VERSION="ansible~=2.2.0" ANSIBLE_LIMIT="centos6"
+    - ANSIBLE_VERSION="ansible~=2.2.0" ANSIBLE_LIMIT="centos7"
+    - ANSIBLE_VERSION="ansible~=2.2.0" ANSIBLE_LIMIT="ubuntu14"
+    - ANSIBLE_VERSION="ansible~=2.2.0" ANSIBLE_LIMIT="ubuntu16"
+    - ANSIBLE_VERSION="ansible~=2.3.0" ANSIBLE_LIMIT="centos6"
+    - ANSIBLE_VERSION="ansible~=2.3.0" ANSIBLE_LIMIT="centos7"
+    - ANSIBLE_VERSION="ansible~=2.3.0" ANSIBLE_LIMIT="ubuntu14"
+    - ANSIBLE_VERSION="ansible~=2.3.0" ANSIBLE_LIMIT="ubuntu16"
+    - ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="centos6"
+    - ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="centos7"
+    - ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="ubuntu14"
+    - ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="ubuntu16"
+    - ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos6"
+    - ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos7"
+    - ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="ubuntu14"
+    - ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="ubuntu16"
+
+matrix:
+  allow_failures:
+    - env: ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos6"
+    - env: ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos7"
+    - env: ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="ubuntu14"
+    - env: ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="ubuntu16"
 
 before_install:
   - sudo apt-get update -qq
@@ -47,5 +64,3 @@ notifications:
     on_success: always
     on_failure: never
     on_start: never
-    on_cancel: never
-    on_error: never
