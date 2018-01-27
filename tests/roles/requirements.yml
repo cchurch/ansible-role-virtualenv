@@ -3,4 +3,3 @@
 - name: chrismeyersfsu.provision_docker
   src: https://github.com/chrismeyersfsu/provision_docker
   version: 516d9d97387c6976f9eb26bce0fd1b343e00c6da
-- src: geerlingguy.repo-epel
