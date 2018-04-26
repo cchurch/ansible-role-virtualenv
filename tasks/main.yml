@@ -4,6 +4,7 @@
   command: whoami
   register: _virtualenv_whoami_result
   changed_when: false
+  check_mode: no
 
 - name: initialize default variables
   set_fact:
