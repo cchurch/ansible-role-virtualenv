@@ -27,6 +27,10 @@ env:
     - ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="centos7"
     - ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="ubuntu14"
     - ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="ubuntu16"
+    - ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="centos6"
+    - ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="centos7"
+    - ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="ubuntu14"
+    - ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="ubuntu16"
     - ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos6"
     - ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos7"
     - ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="ubuntu14"
@@ -34,6 +38,10 @@ env:
 
 matrix:
   allow_failures:
+    - env: ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="centos6"
+    - env: ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="centos7"
+    - env: ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="ubuntu14"
+    - env: ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="ubuntu16"
     - env: ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos6"
     - env: ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos7"
     - env: ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="ubuntu14"
