@@ -8,7 +8,7 @@
 
 - name: create virtualenv
   pip:
-    name: wsgiref
+    name: '{{virtual_default_package|default("wsgiref")}}'
     virtualenv: '{{_virtualenv_path}}'
     virtualenv_command: '{{virtualenv_command|default(omit)}}'
     virtualenv_site_packages: '{{virtualenv_site_packages|default(omit)}}'
