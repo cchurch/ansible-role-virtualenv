@@ -5,7 +5,9 @@ VirtualEnv
 ==========
 
 Configure a Python virtualenv and install/update requirements. Requires Ansible
-2.0 or later.
+2.4 or later.
+
+Support for Ansible versions < 2.4 was dropped as of version 0.6.0.
 
 Requirements
 ------------
@@ -26,7 +28,7 @@ The following variables may be defined to customize this role:
 - `virtualenv_path`: Target directory in which to create/update virtualenv
   (required).
 - `virtualenv_user`: User to become for creating/updating the virtualenv;
-  default is `ansible_user` or `ansible_ssh_user`.
+  default is the current user (i.e. `ansible_user` or `ansible_ssh_user`).
 - `virtualenv_default_os_packages`: OS packages required in order to create a
   virtualenv. There is usually no need to change this option unless running on a
   system using a different `ansible_pkg_mgr`; default is
@@ -44,9 +46,10 @@ The following variables may be defined to customize this role:
   packages; default is `omit` to use the `pip` command found in the path.
 - `virtualenv_command`: Alternate executable to use to create virtualenv;
   default is `omit` to use `virtualenv` command found in the path.
+- `virtualenv_python`: Python version to use to create virtualenv; default is
+  `omit` to use the Python interpreter used by Ansible.
 - `virtualenv_default_package`: Default package to install when creating the
-  virtualenv; default is `wsgiref`. Another package will need to be used for
-  Python 3.x.
+  virtualenv; default is `pip`.
 - `virtualenv_site_packages`: Boolean indicating whether virtualenv will use
   global site packages; default is `no`.
 - `virtualenv_pre_packages`: Python packages to `pip` install inside the
@@ -111,7 +114,7 @@ results:
 - `ansible_user=other ansible_become_user=root virtualenv_user=another`: OS and
   global packages will be installed; `become` will be used; virtualenv will be
   owned by `another`. When using Ansible 2.1 and later, you may need to define
-  `allow_world_readable_tmpfiles` in your `ansible.cfg` (which still still
+  `allow_world_readable_tmpfiles` in your `ansible.cfg` (which still
   generate a warning instead of an error) or use another approach to support one
   unprivileged user becoming another unprivileged user.
 
@@ -131,7 +134,7 @@ requirements, then removes an old package no longer needed:
             yum: [libjpeg-devel]
           virtualenv_pre_packages:
             - name: Django
-              version: 1.8.18
+              version: 1.11.24
             - Pillow
           virtualenv_requirements:
             - ~/src/requirements.txt
@@ -140,9 +143,10 @@ requirements, then removes an old package no longer needed:
               state: absent
           virtualenv_notify_on_updated: virtualenv updated
       handlers:
-        - name: virtualenv updated
+        - name: custom virtualenv handler
           debug:
             msg: 'virtualenv in {{virtualenv_path}} was updated.'
+          listen: virtualenv updated
 
 License
 -------

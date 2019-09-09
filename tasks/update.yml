@@ -2,41 +2,42 @@
 
 - name: remove existing virtualenv
   file:
-    path: '{{_virtualenv_path}}'
+    path: "{{ _virtualenv_path }}"
     state: absent
   when: virtualenv_recreate
 
 - name: create virtualenv
   pip:
-    name: '{{virtual_default_package|default("wsgiref")}}'
-    virtualenv: '{{_virtualenv_path}}'
-    virtualenv_command: '{{virtualenv_command|default(omit)}}'
-    virtualenv_site_packages: '{{virtualenv_site_packages|default(omit)}}'
+    name: "{{ virtualenv_default_package | default('pip') }}"
+    virtualenv: "{{ _virtualenv_path }}"
+    virtualenv_command: "{{ virtualenv_command | default(omit) }}"
+    virtualenv_python: "{{ virtualenv_python | default(omit) }}"
+    virtualenv_site_packages: "{{ virtualenv_site_packages | default(omit) }}"
   register: _virtualenv_create_result
-  changed_when: _virtualenv_create_result|success and _virtualenv_create_result.stdout|search('New python executable')
-  notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'
+  changed_when: _virtualenv_create_result is succeeded and _virtualenv_create_result.stdout is search('New python executable')
+  notify: "{{ virtualenv_notify_on_updated | default('virtualenv updated', true) }}"
 
 - name: install virtualenv pre packages
   pip:
-    name: '{{item.name|default(item,true)}}'
-    version: '{{item.version|default(omit,true)}}'
-    state: '{{item.state|default("present",true)}}'
-    virtualenv: '{{_virtualenv_path}}'
-  with_items: '{{virtualenv_pre_packages}}'
-  notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'
+    name: "{{ item.name | default(item, true) }}"
+    version: "{{ item.version | default(omit, true) }}"
+    state: "{{ item.state | default('present', true) }}"
+    virtualenv: "{{ _virtualenv_path }}"
+  with_items: "{{ virtualenv_pre_packages }}"
+  notify: "{{ virtualenv_notify_on_updated | default('virtualenv updated', true) }}"
 
 - name: install virtualenv requirements
   pip:
-    requirements: '{{item}}'
-    virtualenv: '{{_virtualenv_path}}'
-  with_items: '{{virtualenv_requirements}}'
-  notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'
+    requirements: "{{ item }}"
+    virtualenv: "{{ _virtualenv_path }}"
+  with_items: "{{ virtualenv_requirements }}"
+  notify: "{{ virtualenv_notify_on_updated | default('virtualenv updated', true) }}"
 
 - name: install virtualenv post packages
   pip:
-    name: '{{item.name|default(item,true)}}'
-    version: '{{item.version|default(omit,true)}}'
-    state: '{{item.state|default("present",true)}}'
-    virtualenv: '{{_virtualenv_path}}'
-  with_items: '{{virtualenv_post_packages}}'
-  notify: '{{virtualenv_notify_on_updated|default("virtualenv default handler",true)}}'
+    name: "{{ item.name | default(item, true) }}"
+    version: "{{ item.version | default(omit, true) }}"
+    state: "{{ item.state | default('present', true) }}"
+    virtualenv: "{{ _virtualenv_path }}"
+  with_items: "{{ virtualenv_post_packages }}"
+  notify: "{{ virtualenv_notify_on_updated | default('virtualenv updated', true) }}"

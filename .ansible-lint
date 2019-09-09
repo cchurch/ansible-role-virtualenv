@@ -1,0 +1,4 @@
+---
+
+exclude_paths:
+  - ./tests/roles/chrismeyersfsu.provision_docker

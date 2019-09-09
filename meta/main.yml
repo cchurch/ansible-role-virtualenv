@@ -5,7 +5,7 @@ galaxy_info:
   description: Configure and update a Python virtualenv.
   company: "Nine More Minutes, Inc."
   license: BSD
-  min_ansible_version: 2.1
+  min_ansible_version: 2.4
   platforms:
     - name: EL
       versions:
@@ -15,6 +15,7 @@ galaxy_info:
       versions:
         - trusty
         - xenial
+        - bionic
   galaxy_tags:
     - development
     - packaging

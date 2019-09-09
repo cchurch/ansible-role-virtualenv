@@ -6,7 +6,7 @@
   tasks:
     - name: stop and remove docker containers
       docker_container:
-        name: "{{inventory_hostname}}"
-        image: "{{hostvars[inventory_hostname].image|default(provision_docker_image_default)}}"
+        name: "{{ inventory_hostname }}"
+        image: "{{ hostvars[inventory_hostname].image | default(provision_docker_image_default) }}"
         state: absent
       delegate_to: localhost

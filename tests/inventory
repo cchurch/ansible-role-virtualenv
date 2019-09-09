@@ -6,30 +6,15 @@ ansible_connection=local
 ansible_python_interpreter=/usr/bin/env python
 
 [containers]
-#virtualenv_amazon image="amazonlinux:latest"
-#virtualenv_arch image="base/archlinux"
 virtualenv_centos6 image="centos:6"
 virtualenv_centos7 image="centos:7"
-#virtualenv_debian7 image="debian:wheezy"
-#virtualenv_debian8 image="debian:jessie"
-#virtualenv_debian9 image="debian:stretch"
-#virtualenv_fedora25 image="fedora:25"
-#virtualenv_fedora26 image="fedora:26"
 virtualenv_ubuntu14 image="ubuntu:trusty"
 virtualenv_ubuntu16 image="ubuntu:xenial"
+virtualenv_ubuntu18 image="ubuntu:bionic"
 
 [containers:vars]
 ansible_connection=docker
 ansible_user=root
-
-#[amazon]
-#virtualenv_amazon
-
-#[arch]
-#virtualenv_arch
-
-#[arch:vars]
-#ansible_python_interpreter=/usr/bin/python2
 
 [centos:children]
 centos6
@@ -41,21 +26,16 @@ virtualenv_centos6
 [centos7]
 virtualenv_centos7
 
-#[debian]
-#virtualenv_debian7
-#virtualenv_debian8
-#virtualenv_debian9
-
-#[fedora]
-#virtualenv_fedora25
-#virtualenv_fedora26
-
 [ubuntu:children]
 ubuntu14
 ubuntu16
+ubuntu18
 
 [ubuntu14]
 virtualenv_ubuntu14
 
 [ubuntu16]
 virtualenv_ubuntu16
+
+[ubuntu18]
+virtualenv_ubuntu18

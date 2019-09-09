@@ -4,53 +4,55 @@
   command: whoami
   register: _virtualenv_whoami_result
   changed_when: false
+  check_mode: false
 
 - name: initialize default variables
   set_fact:
-    _virtualenv_path: '{{virtualenv_path|mandatory}}'
-    _virtualenv_user: '{{virtualenv_user|default(ansible_user|default(""),true)|default(ansible_ssh_user|default(""),true)}}'
-    _virtualenv_becoming: '{{((_virtualenv_whoami_result.stdout != ansible_user|default("") and _virtualenv_whoami_result.stdout != ansible_ssh_user|default("")) or _virtualenv_whoami_result.stdout == "root")|bool}}'
-    _virtualenv_actual_user: '{{_virtualenv_whoami_result.stdout}}'
+    _virtualenv_path: "{{ virtualenv_path | mandatory }}"
+    _virtualenv_user: "{{ virtualenv_user | default(ansible_user | default(''), true) | default(ansible_ssh_user | default(''), true) }}"
+    _virtualenv_becoming: >-
+      {{ ((_virtualenv_whoami_result.stdout != ansible_user | default('') and
+      _virtualenv_whoami_result.stdout != ansible_ssh_user | default('')) or
+      _virtualenv_whoami_result.stdout == 'root') | bool }}
+    _virtualenv_actual_user: '{{ _virtualenv_whoami_result.stdout }}'
 
-- name: install default os packages to create virtualenv
-  action:
-    module: '{{ansible_pkg_mgr}}'
-    name: '{{item.name|default(item,true)}}'
-    state: '{{item.state|default("present",true)}}'
-  with_items: '{{virtualenv_default_os_packages[ansible_pkg_mgr|default(none,true)]|default([])}}'
+- name: install required os packages to create virtualenv
+  package:
+    name: "{{ item.name | default(item, true) }}"
+    state: "{{ item.state | default('present', true) }}"
+  with_items: "{{ virtualenv_default_os_packages[ansible_pkg_mgr | default(none, true)] | default([]) }}"
   when: _virtualenv_becoming
 
 - name: install additional os packages to support virtualenv
-  action:
-    module: '{{ansible_pkg_mgr}}'
-    name: '{{item.name|default(item,true)}}'
-    state: '{{item.state|default("present",true)}}'
-  with_items: '{{virtualenv_os_packages[ansible_pkg_mgr|default(none,true)]|default([])}}'
+  package:
+    name: "{{ item.name | default(item, true) }}"
+    state: "{{ item.state | default('present', true) }}"
+  with_items: "{{ virtualenv_os_packages[ansible_pkg_mgr | default(none, true)] | default([]) }}"
   when: _virtualenv_becoming
 
 - name: install global python packages with easy_install
   easy_install:
-    executable: '{{virtualenv_easy_install_executable|default(omit)}}'
-    name: '{{item.name|default(item,true)}}'
-    state: '{{item.state|default("present",true)}}'
-  with_items: '{{virtualenv_easy_install_packages}}'
+    executable: "{{ virtualenv_easy_install_executable | default(omit) }}"
+    name: "{{ item.name | default(item, true) }}"
+    state: "{{ item.state | default('present', true) }}"
+  with_items: "{{ virtualenv_easy_install_packages }}"
   when: _virtualenv_becoming
 
 - name: install global python packages with pip
   pip:
-    executable: '{{virtualenv_pip_executable|default(omit)}}'
-    name: '{{item.name|default(item,true)}}'
-    version: '{{item.version|default(omit,true)}}'
-    state: '{{item.state|default("present",true)}}'
-  with_items: '{{virtualenv_global_packages}}'
+    executable: "{{ virtualenv_pip_executable | default(omit) }}"
+    name: "{{ item.name | default(item, true) }}"
+    version: "{{ item.version | default(omit, true) }}"
+    state: "{{ item.state|default('present', true) }}"
+  with_items: "{{ virtualenv_global_packages }}"
   when: _virtualenv_becoming
 
 - name: run update tasks with become
-  include: update.yml
+  import_tasks: update.yml
   when: _virtualenv_user != _virtualenv_actual_user
-  become: yes
-  become_user: '{{_virtualenv_user}}'
+  become: true
+  become_user: "{{ _virtualenv_user }}"
 
-- name: run included tasks without become
-  include: update.yml
+- name: run update tasks without become
+  import_tasks: update.yml
   when: _virtualenv_user == _virtualenv_actual_user

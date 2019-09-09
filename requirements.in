@@ -1,4 +1,5 @@
 ansible
+ansible-lint
 bumpversion
-docker-py
+docker
 tox

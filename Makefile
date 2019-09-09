@@ -1,10 +1,10 @@
 .PHONY: core-requirements
 core-requirements:
-	pip install "pip>=9,<9.1" setuptools "pip-tools>=1"
+	pip install pip setuptools "pip-tools>=1"
 
 .PHONY: update-pip-requirements
 update-pip-requirements: core-requirements
-	pip install -U "pip>=9,<9.1" setuptools "pip-tools>=1"
+	pip install -U pip setuptools "pip-tools>=1"
 	pip-compile -U requirements.in
 
 .PHONY: requirements
@@ -42,6 +42,10 @@ clean-tox:
 .PHONY: tox
 tox: requirements galaxy-requirements
 	tox
+
+.PHONY: lint
+lint: requirements galaxy-requirements
+	ansible-lint tests/main.yml
 
 .PHONY: bump-major
 bump-major: requirements
