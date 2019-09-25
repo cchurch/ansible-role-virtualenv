@@ -16,7 +16,6 @@
       virtualenv_post_packages:
         - name: PIL
           state: absent
-      virtualenv_notify_on_updated: virtualenv updated
   handlers:
     - name: custom virtualenv handler
       debug:

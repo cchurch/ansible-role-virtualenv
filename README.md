@@ -68,7 +68,9 @@ The following variable may be defined for the play or role invocation (but not
 as an inventory group or host variable):
 
 - `virtualenv_notify_on_updated`: Handler name to notify when the virtualenv
-  was created or updated.
+  was created or updated. The default is `"virtualenv updated"`; it is generally
+  recommended for custom handlers to listen for `"virtualenv updated"` instead
+  of changing the notification name.
 
 Each item in a package list above may be specified as a string with only the
 package name or as a hash with `name`, `state` or `version` keys, e.g.:
@@ -141,7 +143,6 @@ requirements, then removes an old package no longer needed:
           virtualenv_post_packages:
             - name: PIL
               state: absent
-          virtualenv_notify_on_updated: virtualenv updated
       handlers:
         - name: custom virtualenv handler
           debug:
