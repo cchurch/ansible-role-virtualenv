@@ -1,5 +1,6 @@
 ---
 
+if: branch = master
 sudo: required
 dist: bionic
 language: python
