@@ -14,7 +14,7 @@
 - name: initialize default role variables
   set_fact:
     _virtualenv_path: "{{ virtualenv_path | mandatory }}"
-    _virtualenv_user: "{{ virtualenv_user | default(_scm_current_user, true) }}"
+    _virtualenv_user: "{{ virtualenv_user | default(_virtualenv_current_user, true) }}"
     _virtualenv_becoming: "{{ (_virtualenv_actual_user != _virtualenv_current_user or _virtualenv_actual_user == 'root') | bool }}"
 
 - name: install required os packages to create virtualenv
