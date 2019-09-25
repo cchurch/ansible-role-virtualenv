@@ -6,15 +6,16 @@
   changed_when: false
   check_mode: false
 
-- name: initialize default variables
+- name: determine current user vs. actual user
+  set_fact:
+    _virtualenv_current_user: "{{ ansible_user | default(ansible_ssh_user, true) | default(ansible_user_id, true) | default(lookup('env', 'USER')) }}"
+    _virtualenv_actual_user: "{{ _virtualenv_whoami_result.stdout }}"
+
+- name: initialize default role variables
   set_fact:
     _virtualenv_path: "{{ virtualenv_path | mandatory }}"
-    _virtualenv_user: "{{ virtualenv_user | default(ansible_user | default(''), true) | default(ansible_ssh_user | default(''), true) }}"
-    _virtualenv_becoming: >-
-      {{ ((_virtualenv_whoami_result.stdout != ansible_user | default('') and
-      _virtualenv_whoami_result.stdout != ansible_ssh_user | default('')) or
-      _virtualenv_whoami_result.stdout == 'root') | bool }}
-    _virtualenv_actual_user: '{{ _virtualenv_whoami_result.stdout }}'
+    _virtualenv_user: "{{ virtualenv_user | default(_scm_current_user, true) }}"
+    _virtualenv_becoming: "{{ (_virtualenv_actual_user != _virtualenv_current_user or _virtualenv_actual_user == 'root') | bool }}"
 
 - name: install required os packages to create virtualenv
   package:
@@ -56,3 +57,4 @@
 - name: run update tasks without become
   import_tasks: update.yml
   when: _virtualenv_user == _virtualenv_actual_user
+  become: false
