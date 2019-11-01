@@ -115,10 +115,10 @@ results:
   installed; `become` will be used; virtualenv will be owned by `other`.
 - `ansible_user=other ansible_become_user=root virtualenv_user=another`: OS and
   global packages will be installed; `become` will be used; virtualenv will be
-  owned by `another`. When using Ansible 2.1 and later, you may need to define
-  `allow_world_readable_tmpfiles` in your `ansible.cfg` (which still
-  generate a warning instead of an error) or use another approach to support one
-  unprivileged user becoming another unprivileged user.
+  owned by `another`. You may need to define `allow_world_readable_tmpfiles` in
+  your `ansible.cfg` (which still generate a warning instead of an error) or
+  use another approach to support one unprivileged user becoming another
+  unprivileged user.
 
 Example Playbook
 ----------------
@@ -129,24 +129,25 @@ requirements, then removes an old package no longer needed:
 
     - hosts: all
       roles:
-        - role: cchurch.virtualenv
-          virtualenv_path: ~/env
-          virtualenv_os_packages:
-            apt: [libjpeg-dev]
-            yum: [libjpeg-devel]
-          virtualenv_pre_packages:
-            - name: Django
-              version: 1.11.24
-            - Pillow
-          virtualenv_requirements:
-            - ~/src/requirements.txt
-          virtualenv_post_packages:
-            - name: PIL
-              state: absent
+        - name: cchurch.virtualenv
+          vars:
+            virtualenv_path: ~/env
+            virtualenv_os_packages:
+              apt: [libjpeg-dev]
+              yum: [libjpeg-devel]
+            virtualenv_pre_packages:
+              - name: Django
+                version: 1.11.26
+              - Pillow
+            virtualenv_requirements:
+              - ~/src/requirements.txt
+            virtualenv_post_packages:
+              - name: PIL
+                state: absent
       handlers:
         - name: custom virtualenv handler
           debug:
-            msg: 'virtualenv in {{virtualenv_path}} was updated.'
+            msg: "virtualenv in {{ virtualenv_path }} was updated."
           listen: virtualenv updated
 
 License
