@@ -13,7 +13,7 @@
   hosts: centos:&containers
   tasks:
     - name: install epel
-      yum:
+      package:
         name: epel-release
 
 - name: check and install python on ubuntu containers
