@@ -16,6 +16,8 @@ matrix:
     - python: "2.7"
       env: 'ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="centos7"'
     - python: "2.7"
+      env: 'ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="centos8"'
+    - python: "2.7"
       env: 'ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="ubuntu14"'
     - python: "2.7"
       env: 'ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="ubuntu16"'
@@ -25,6 +27,8 @@ matrix:
       env: 'ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="centos6"'
     - python: "3.7"
       env: 'ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="centos7"'
+    - python: "3.7"
+      env: 'ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="centos8"'
     - python: "3.7"
       env: 'ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="ubuntu14"'
     - python: "3.7"
@@ -36,6 +40,8 @@ matrix:
     - python: "3.7"
       env: 'ANSIBLE_VERSION="ansible~=2.6.0" ANSIBLE_LIMIT="centos7"'
     - python: "3.7"
+      env: 'ANSIBLE_VERSION="ansible~=2.6.0" ANSIBLE_LIMIT="centos8"'
+    - python: "3.7"
       env: 'ANSIBLE_VERSION="ansible~=2.6.0" ANSIBLE_LIMIT="ubuntu14"'
     - python: "3.7"
       env: 'ANSIBLE_VERSION="ansible~=2.6.0" ANSIBLE_LIMIT="ubuntu16"'
@@ -45,6 +51,8 @@ matrix:
       env: 'ANSIBLE_VERSION="ansible~=2.7.0" ANSIBLE_LIMIT="centos6"'
     - python: "3.7"
       env: 'ANSIBLE_VERSION="ansible~=2.7.0" ANSIBLE_LIMIT="centos7"'
+    - python: "3.7"
+      env: 'ANSIBLE_VERSION="ansible~=2.7.0" ANSIBLE_LIMIT="centos8"'
     - python: "3.7"
       env: 'ANSIBLE_VERSION="ansible~=2.7.0" ANSIBLE_LIMIT="ubuntu14"'
     - python: "3.7"
@@ -56,15 +64,31 @@ matrix:
     - python: "3.7"
       env: 'ANSIBLE_VERSION="ansible~=2.8.0" ANSIBLE_LIMIT="centos7"'
     - python: "3.7"
+      env: 'ANSIBLE_VERSION="ansible~=2.8.0" ANSIBLE_LIMIT="centos8"'
+    - python: "3.7"
       env: 'ANSIBLE_VERSION="ansible~=2.8.0" ANSIBLE_LIMIT="ubuntu14"'
     - python: "3.7"
       env: 'ANSIBLE_VERSION="ansible~=2.8.0" ANSIBLE_LIMIT="ubuntu16"'
     - python: "3.7"
       env: 'ANSIBLE_VERSION="ansible~=2.8.0" ANSIBLE_LIMIT="ubuntu18"'
     - python: "3.7"
+      env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="centos6"'
+    - python: "3.7"
+      env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="centos7"'
+    - python: "3.7"
+      env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="centos8"'
+    - python: "3.7"
+      env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="ubuntu14"'
+    - python: "3.7"
+      env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="ubuntu16"'
+    - python: "3.7"
+      env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="ubuntu18"'
+    - python: "3.7"
       env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos6"'
     - python: "3.7"
       env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos7"'
+    - python: "3.7"
+      env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos8"'
     - python: "3.7"
       env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="ubuntu14"'
     - python: "3.7"
@@ -76,6 +100,8 @@ matrix:
       env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos6"'
     - python: "3.7"
       env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos7"'
+    - python: "3.7"
+      env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos8"'
     - python: "3.7"
       env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="ubuntu14"'
     - python: "3.7"

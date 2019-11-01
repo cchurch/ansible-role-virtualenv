@@ -8,6 +8,7 @@ ansible_python_interpreter=/usr/bin/env python
 [containers]
 virtualenv_centos6 image="centos:6"
 virtualenv_centos7 image="centos:7"
+virtualenv_centos8 image="centos:8"
 virtualenv_ubuntu14 image="ubuntu:trusty"
 virtualenv_ubuntu16 image="ubuntu:xenial"
 virtualenv_ubuntu18 image="ubuntu:bionic"
@@ -19,12 +20,19 @@ ansible_user=root
 [centos:children]
 centos6
 centos7
+centos8
 
 [centos6]
 virtualenv_centos6
 
 [centos7]
 virtualenv_centos7
+
+[centos8]
+virtualenv_centos8
+
+[centos8:vars]
+ansible_python_interpreter=/usr/libexec/platform-python
 
 [ubuntu:children]
 ubuntu14
