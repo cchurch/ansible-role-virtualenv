@@ -19,7 +19,7 @@ jinja2==2.10.3            # via ansible
 markupsafe==1.1.1         # via jinja2
 more-itertools==7.2.0     # via zipp
 packaging==19.2           # via tox
-pluggy==0.13.0            # via tox
+pluggy==0.13.1            # via tox
 py==1.8.0                 # via tox
 pycparser==2.19           # via cffi
 pyparsing==2.4.5          # via packaging
@@ -31,6 +31,6 @@ six==1.13.0               # via ansible-lint, cryptography, docker, packaging, t
 toml==0.10.0              # via tox
 tox==3.14.1
 urllib3==1.25.7           # via requests
-virtualenv==16.7.7        # via tox
+virtualenv==16.7.8        # via tox
 websocket-client==0.56.0  # via docker
 zipp==0.6.0               # via importlib-metadata
