@@ -23,22 +23,27 @@ matrix:
       env: 'ANSIBLE_VERSION="ansible~=2.8.0" ANSIBLE_LIMIT="ubuntu16"'
     - python: "3.7"
       env: 'ANSIBLE_VERSION="ansible~=2.8.0" ANSIBLE_LIMIT="ubuntu18"'
+    - python: "3.7"
+      env: 'ANSIBLE_VERSION="ansible~=2.8.0" ANSIBLE_LIMIT="ubuntu20"'
     - env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="centos6"'
     - env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="centos7"'
     - env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="centos8"'
     - env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="ubuntu16"'
     - env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="ubuntu18"'
+    - env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="ubuntu20"'
     - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="centos6"'
     - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="centos7"'
     - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="centos8"'
     - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="ubuntu16"'
     - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="ubuntu18"'
+    - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="ubuntu20"'
   allow_failures:
     - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="centos6"'
     - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="centos7"'
     - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="centos8"'
     - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="ubuntu16"'
     - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="ubuntu18"'
+    - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="ubuntu20"'
 
 before_install:
   - sudo apt-get update -qq

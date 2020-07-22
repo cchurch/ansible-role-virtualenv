@@ -11,6 +11,7 @@ virtualenv_centos7 image="centos:7"
 virtualenv_centos8 image="centos:8"
 virtualenv_ubuntu16 image="ubuntu:xenial"
 virtualenv_ubuntu18 image="ubuntu:bionic"
+virtualenv_ubuntu20 image="ubuntu:focal"
 
 [containers:vars]
 ansible_connection=docker
@@ -42,3 +43,9 @@ virtualenv_ubuntu16
 
 [ubuntu18]
 virtualenv_ubuntu18
+
+[ubuntu20]
+virtualenv_ubuntu20
+
+[ubuntu20:vars]
+python_minimal_package=python3-minimal
