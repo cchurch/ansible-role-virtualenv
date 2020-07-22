@@ -3,7 +3,7 @@ localhost
 
 [local:vars]
 ansible_connection=local
-ansible_python_interpreter=/usr/bin/env python
+ansible_python_interpreter=/usr/bin/env python3
 
 [containers]
 virtualenv_centos6 image="centos:6"

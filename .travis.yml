@@ -4,6 +4,8 @@ if: branch = master
 sudo: required
 dist: bionic
 language: python
+python:
+  - "3.8"
 services:
   - docker
 env:
@@ -11,46 +13,6 @@ env:
     - ANSIBLE_CONFIG=tests/ansible.cfg
 matrix:
   include:
-    - python: "2.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="centos6"'
-    - python: "2.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="centos7"'
-    - python: "2.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="centos8"'
-    - python: "2.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="ubuntu16"'
-    - python: "2.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.4.0" ANSIBLE_LIMIT="ubuntu18"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="centos6"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="centos7"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="centos8"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="ubuntu16"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.5.0" ANSIBLE_LIMIT="ubuntu18"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.6.0" ANSIBLE_LIMIT="centos6"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.6.0" ANSIBLE_LIMIT="centos7"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.6.0" ANSIBLE_LIMIT="centos8"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.6.0" ANSIBLE_LIMIT="ubuntu16"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.6.0" ANSIBLE_LIMIT="ubuntu18"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.7.0" ANSIBLE_LIMIT="centos6"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.7.0" ANSIBLE_LIMIT="centos7"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.7.0" ANSIBLE_LIMIT="centos8"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.7.0" ANSIBLE_LIMIT="ubuntu16"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.7.0" ANSIBLE_LIMIT="ubuntu18"'
     - python: "3.7"
       env: 'ANSIBLE_VERSION="ansible~=2.8.0" ANSIBLE_LIMIT="centos6"'
     - python: "3.7"
@@ -61,37 +23,22 @@ matrix:
       env: 'ANSIBLE_VERSION="ansible~=2.8.0" ANSIBLE_LIMIT="ubuntu16"'
     - python: "3.7"
       env: 'ANSIBLE_VERSION="ansible~=2.8.0" ANSIBLE_LIMIT="ubuntu18"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="centos6"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="centos7"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="centos8"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="ubuntu16"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="ubuntu18"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos6"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos7"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos8"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="ubuntu16"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="ubuntu18"'
+    - env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="centos6"'
+    - env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="centos7"'
+    - env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="centos8"'
+    - env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="ubuntu16"'
+    - env: 'ANSIBLE_VERSION="ansible~=2.9.0" ANSIBLE_LIMIT="ubuntu18"'
+    - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="centos6"'
+    - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="centos7"'
+    - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="centos8"'
+    - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="ubuntu16"'
+    - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="ubuntu18"'
   allow_failures:
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos6"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos7"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="centos8"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="ubuntu16"'
-    - python: "3.7"
-      env: 'ANSIBLE_VERSION="git+https://github.com/ansible/ansible.git@devel" ANSIBLE_LIMIT="ubuntu18"'
+    - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="centos6"'
+    - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="centos7"'
+    - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="centos8"'
+    - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="ubuntu16"'
+    - env: 'ANSIBLE_VERSION="ansible>=2.10.0a1,<2.11" ANSIBLE_LIMIT="ubuntu18"'
 
 before_install:
   - sudo apt-get update -qq

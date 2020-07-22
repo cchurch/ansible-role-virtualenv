@@ -1,15 +1,18 @@
+PYTHON_MAJOR_MINOR := $(shell python -c "import sys; print('{0}{1}'.format(*sys.version_info))")
+REQUIREMENTS_TXT = requirements$(PYTHON_MAJOR_MINOR).txt
+
 .PHONY: core-requirements
 core-requirements:
-	pip install pip setuptools "pip-tools>=1"
+	pip install pip setuptools pip-tools
 
-.PHONY: update-pip-requirements
-update-pip-requirements: core-requirements
-	pip install -U pip setuptools "pip-tools>=1"
-	pip-compile -U requirements.in
+.PHONY: update-requirements
+update-requirements: core-requirements
+	pip install -U pip setuptools pip-tools
+	pip-compile -U requirements.in -o $(REQUIREMENTS_TXT)
 
 .PHONY: requirements
 requirements: core-requirements
-	pip-sync requirements.txt
+	pip-sync $(REQUIREMENTS_TXT)
 
 .PHONY: galaxy-requirements
 galaxy-requirements: requirements

@@ -44,7 +44,7 @@
     executable: "{{ virtualenv_pip_executable | default(omit) }}"
     name: "{{ item.name | default(item, true) }}"
     version: "{{ item.version | default(omit, true) }}"
-    state: "{{ item.state|default('present', true) }}"
+    state: "{{ item.state | default('present', true) }}"
   with_items: "{{ virtualenv_global_packages }}"
   when: _virtualenv_becoming
 

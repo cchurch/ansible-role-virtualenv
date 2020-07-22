@@ -4,10 +4,9 @@
 VirtualEnv
 ==========
 
-Configure a Python virtualenv and install/update requirements. Requires Ansible
-2.4 or later.
+Configure a Python virtualenv and install/update requirements. Requires Ansible 2.8 or later.
 
-Support for Ansible versions < 2.4 was dropped as of version 0.6.0.
+Support for Ansible versions < 2.8 was dropped as of version 0.7.0.
 
 Requirements
 ------------
