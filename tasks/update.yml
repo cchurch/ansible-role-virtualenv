@@ -14,7 +14,10 @@
     virtualenv_python: "{{ virtualenv_python | default(omit) }}"
     virtualenv_site_packages: "{{ virtualenv_site_packages | default(omit) }}"
   register: _virtualenv_create_result
-  changed_when: _virtualenv_create_result is succeeded and _virtualenv_create_result.stdout is search('New python executable')
+  changed_when: >-
+    _virtualenv_create_result is succeeded and
+    (_virtualenv_create_result.stdout is search('New python executable') or
+    _virtualenv_create_result.stdout is search('created virtual environment'))
   notify: "{{ virtualenv_notify_on_updated | default('virtualenv updated', true) }}"
 
 - name: install virtualenv pre packages

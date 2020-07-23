@@ -37,6 +37,7 @@ ansible_python_interpreter=/usr/libexec/platform-python
 [ubuntu:children]
 ubuntu16
 ubuntu18
+ubuntu20
 
 [ubuntu16]
 virtualenv_ubuntu16

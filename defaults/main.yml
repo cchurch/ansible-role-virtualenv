@@ -2,8 +2,8 @@
 
 virtualenv_default_os_packages:
   apt:
-    - python-dev
-    - python-virtualenv
+    - "{{ (ansible_distribution_major_version is version('20', '>=')) | ternary('python3-dev', 'python-dev') }}"
+    - "{{ (ansible_distribution_major_version is version('20', '>=')) | ternary('python3-virtualenv', 'python-virtualenv') }}"
   dnf:
     - python3-devel
     - python3-virtualenv

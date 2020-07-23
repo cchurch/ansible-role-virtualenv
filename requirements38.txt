@@ -31,6 +31,6 @@ ruamel.yaml==0.16.10      # via ansible-lint
 six==1.15.0               # via ansible-lint, cryptography, docker, packaging, tox, virtualenv, websocket-client
 toml==0.10.1              # via tox
 tox==3.17.1               # via -r requirements.in
-urllib3==1.25.9           # via requests
+urllib3==1.25.10          # via requests
 virtualenv==20.0.27       # via tox
 websocket-client==0.57.0  # via docker
