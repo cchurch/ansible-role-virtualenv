@@ -12,7 +12,7 @@ bumpversion==0.6.0        # via -r requirements.in
 certifi==2020.6.20        # via requests
 cffi==1.14.0              # via cryptography
 chardet==3.0.4            # via requests
-cryptography==3.0         # via ansible
+cryptography==3.2         # via ansible
 distlib==0.3.1            # via virtualenv
 docker==4.2.2             # via -r requirements.in
 filelock==3.0.12          # via tox, virtualenv
@@ -26,7 +26,6 @@ pycparser==2.20           # via cffi
 pyparsing==2.4.7          # via packaging
 pyyaml==5.3.1             # via ansible, ansible-lint
 requests==2.24.0          # via docker
-ruamel.yaml.clib==0.2.0   # via ruamel.yaml
 ruamel.yaml==0.16.10      # via ansible-lint
 six==1.15.0               # via ansible-lint, cryptography, docker, packaging, tox, virtualenv, websocket-client
 toml==0.10.1              # via tox
