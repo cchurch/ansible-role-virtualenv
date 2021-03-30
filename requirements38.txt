@@ -4,39 +4,87 @@
 #
 #    pip-compile --output-file=requirements38.txt requirements.in
 #
-ansible-base==2.10.2      # via ansible
-ansible-lint==4.3.6       # via -r requirements.in
-ansible==2.10.1           # via -r requirements.in, ansible-lint
-appdirs==1.4.4            # via virtualenv
-bump2version==1.0.1       # via bumpversion
-bumpversion==0.6.0        # via -r requirements.in
-certifi==2020.6.20        # via requests
-cffi==1.14.3              # via cryptography
-chardet==3.0.4            # via requests
-colorama==0.4.4           # via rich
-commonmark==0.9.1         # via rich
-cryptography==3.2.1       # via ansible-base
-distlib==0.3.1            # via virtualenv
-docker==4.3.1             # via -r requirements.in
-filelock==3.0.12          # via tox, virtualenv
-idna==2.10                # via requests
-jinja2==2.11.2            # via ansible-base
-markupsafe==1.1.1         # via jinja2
-packaging==20.4           # via ansible-base, tox
-pluggy==0.13.1            # via tox
-py==1.9.0                 # via tox
-pycparser==2.20           # via cffi
-pygments==2.7.2           # via rich
-pyparsing==2.4.7          # via packaging
-pyyaml==5.3.1             # via ansible-base, ansible-lint
-requests==2.24.0          # via docker
-rich==9.1.0               # via ansible-lint
-ruamel.yaml.clib==0.2.2   # via ruamel.yaml
-ruamel.yaml==0.16.12      # via ansible-lint
-six==1.15.0               # via cryptography, docker, packaging, tox, virtualenv, websocket-client
-toml==0.10.2              # via tox
-tox==3.20.1               # via -r requirements.in
-typing-extensions==3.7.4.3  # via rich
-urllib3==1.25.11          # via requests
-virtualenv==20.1.0        # via tox
-websocket-client==0.57.0  # via docker
+ansible-base==2.10.2
+    # via ansible
+ansible-lint==4.3.6
+    # via -r requirements.in
+ansible==2.10.1
+    # via
+    #   -r requirements.in
+    #   ansible-lint
+appdirs==1.4.4
+    # via virtualenv
+bump2version==1.0.1
+    # via bumpversion
+bumpversion==0.6.0
+    # via -r requirements.in
+certifi==2020.6.20
+    # via requests
+cffi==1.14.3
+    # via cryptography
+chardet==3.0.4
+    # via requests
+colorama==0.4.4
+    # via rich
+commonmark==0.9.1
+    # via rich
+cryptography==3.2.1
+    # via ansible-base
+distlib==0.3.1
+    # via virtualenv
+docker==4.3.1
+    # via -r requirements.in
+filelock==3.0.12
+    # via
+    #   tox
+    #   virtualenv
+idna==2.10
+    # via requests
+jinja2==2.11.2
+    # via ansible-base
+markupsafe==1.1.1
+    # via jinja2
+packaging==20.4
+    # via
+    #   ansible-base
+    #   tox
+pluggy==0.13.1
+    # via tox
+py==1.9.0
+    # via tox
+pycparser==2.20
+    # via cffi
+pygments==2.7.4
+    # via rich
+pyparsing==2.4.7
+    # via packaging
+pyyaml==5.3.1
+    # via
+    #   ansible-base
+    #   ansible-lint
+requests==2.24.0
+    # via docker
+rich==9.1.0
+    # via ansible-lint
+ruamel.yaml==0.16.12
+    # via ansible-lint
+six==1.15.0
+    # via
+    #   cryptography
+    #   docker
+    #   packaging
+    #   tox
+    #   virtualenv
+    #   websocket-client
+toml==0.10.2
+    # via tox
+tox==3.20.1
+    # via -r requirements.in
+typing-extensions==3.7.4.3
+    # via rich
+urllib3==1.25.11
+    # via requests
+virtualenv==20.1.0
+    # via tox
+websocket-client==0.57.0
+    # via docker
